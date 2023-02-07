@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   const sidebarStyle =
-    "lg:w-[23vw] md:w-[10vw] w-full bg-white shrink-0 lg:px-0 px-2 border-r md:h-screen flex md:flex-col md:items-start md:border-t-0 border-t items-center md:gap-0 gap-3 justify-between md:py-5 flex-grow-0";
+    "lg:w-[23vw] md:w-[10vw] w-full h-[10vh] bg-white shrink-0 lg:px-0 px-2 border-r md:h-screen flex md:flex-col md:items-start md:border-t-0 border-t items-center md:gap-0 gap-3 justify-between md:py-5 flex-grow-0";
 
   const ulStyle =
     "w-full text-lg md:block flex items-center md:justify-start justify-between md:flex-initial flex-1 md:px-0 px-5";

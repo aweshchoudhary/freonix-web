@@ -5,7 +5,7 @@ const Header = () => {
   const linkStyle = "flex items-center gap-5";
 
   return (
-    <header className="md:hidden flex items-center justify-between px-5 py-3 border-b">
+    <header className="md:hidden flex items-center justify-between px-5 h-[7vh] border-b">
       <div className="logo flex items-center gap-5">
         <Link to="/">
           <img
