@@ -1,19 +1,25 @@
-import { Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { Sidebar, Leftbar } from "../components";
+const Bottombar = lazy(() => import("../components/Bottombar"));
 
 const Layout = () => {
   return (
     <>
-      <main className="flex flex-wrap md:flex-row flex-col-reverse">
+      <main className="flex sm:h-screen h-[90vh]">
         <Sidebar />
-        <article className="lg:w-[50vw] md:w-[90vw] h-[93vh] md:flex-1 md:h-screen overflow-y-auto">
+        <article className="flex-1 overflow-y-auto">
           <Suspense fallback="loading...">
             <Outlet />
           </Suspense>
         </article>
         <Leftbar />
       </main>
+      <footer className="sm:hidden flex items-center h-[10vh] w-full border-t">
+        <Suspense fallback="Loading...">
+          <Bottombar />
+        </Suspense>
+      </footer>
     </>
   );
 };

@@ -1,44 +1,21 @@
 import { Icon } from "@iconify/react";
-import React from "react";
 import { Link } from "react-router-dom";
 
-const Sidebar = () => {
-  const sidebarStyle =
-    "lg:w-[23vw] md:w-[10vw] w-full h-[7vh] bg-white shrink-0 lg:px-0 px-2 border-r md:h-screen flex md:flex-col md:items-start md:border-t-0 border-t items-center md:gap-0 gap-3 justify-between md:py-5 flex-grow-0";
-
-  const ulStyle =
-    "w-full text-lg md:block flex items-center md:justify-start justify-between md:flex-initial flex-1 md:px-0 px-5";
-  const liStyle =
-    "py-4 lg:px-5 lg:mx-3 mx-1 md:hover:bg-gray-50 hover:text-primary rounded-lg my-1";
-  const linkStyle = "flex items-center gap-5";
-
+export default function Sidebar() {
+  const liStyle = "hover:bg-gray-100 lg:w-full hover:text-primary rounded-full";
+  const linkStyle =
+    "flex py-3 text-lg lg:px-5 px-3 items-center gap-4 w-full h-full";
   return (
-    <aside className={sidebarStyle}>
-      <header className="lg:px-10 mt-5 md:block hidden">
-        <div className="logo flex items-center gap-5">
-          <img
-            src="/assets/logo.png"
-            alt="logo"
-            className="md:w-[50px] w-[40px] lg:mx-0 mx-auto"
-          />
-          <p className="text-3xl font-semibold lg:block hidden">Twitter</p>
-        </div>
-      </header>
-      <div className="px-3 md:block hidden">
-        <div className="flex items-center gap-3 py-3 px-4 bg-gray-50 rounded-full">
-          <Icon icon="uil:search" className="text-3xl" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-full bg-transparent outline-none border-none"
-          />
-        </div>
+    <aside className="sm:flex hidden flex-col h-screen justify-between p-5 lg:w-[300px] w-[100px] border-r">
+      <div className="logo flex items-center justify-center gap-4  ">
+        <img src="/assets/logo-dark.png" alt="logo dark" className="w-[40px]" />
+        <span className="text-3xl font-bold lg:block hidden">Twitter</span>
       </div>
-      <ul className={ulStyle}>
+      <ul className="flex flex-col lg:items-start items-center gap-2">
         <li className={liStyle}>
           <Link to={"/"} className={linkStyle}>
             <Icon
-              className="md:text-3xl text-2xl lg:mx-0 mx-auto"
+              className="md:text-3xl text-2xl"
               icon="material-symbols:home"
             />
             <span className="lg:block hidden">Home</span>
@@ -46,65 +23,62 @@ const Sidebar = () => {
         </li>
         <li className={liStyle}>
           <Link to={"/explore"} className={linkStyle}>
-            <Icon
-              className="md:text-3xl text-2xl lg:mx-0 mx-auto"
-              icon="ph:hash-bold"
-            />
+            <Icon className="md:text-3xl text-2xl" icon="ph:hash-bold" />
             <span className="lg:block hidden">Explore</span>
+          </Link>
+        </li>
+        <li className={liStyle}>
+          <Link to={"/search"} className={linkStyle}>
+            <Icon className="md:text-3xl text-2xl" icon="uil:search" />
+            <span className="lg:block hidden">Search</span>
           </Link>
         </li>
         <li className={liStyle + " md:hidden block"}>
           <Link to={"/search"} className={linkStyle}>
-            <Icon
-              className="md:text-3xl text-2xl lg:mx-0 mx-auto"
-              icon="uil:search"
-            />
+            <Icon className="md:text-3xl text-2xl" icon="uil:search" />
           </Link>
         </li>
         <li className={liStyle}>
           <Link to={"/notifications"} className={linkStyle}>
-            <Icon
-              className="md:text-3xl text-2xl lg:mx-0 mx-auto"
-              icon="ph:bell-fill"
-            />
+            <Icon className="md:text-3xl text-2xl" icon="ph:bell-fill" />
             <span className="lg:block hidden">Notifications</span>
           </Link>
         </li>
         <li className={liStyle + " md:block hidden"}>
           <Link to={"/messages"} className={linkStyle}>
             <Icon
-              className="md:text-3xl text-2xl lg:mx-0 mx-auto"
+              className="md:text-3xl text-2xl"
               icon="tabler:message-circle-2-filled"
             />
             <span className="lg:block hidden">Messages</span>
           </Link>
         </li>
-        <li className="px-5 mt-10 lg:block hidden">
+        <li className="mt-5 lg:w-full">
           <Link
             to={"/"}
-            className="w-full py-2 text-lg text-textColor hover:opacity-70 transition bg-primary block text-center rounded-full"
+            className="lg:w-full lg:py-2 lg:px-0 p-3 text-lg text-textColor hover:opacity-70 transition bg-primary block text-center rounded-full"
           >
-            Tweet
+            <span className="lg:block hidden">Tweet</span>
+            <Icon
+              className="lg:hidden block text-2xl"
+              icon="fa-solid:feather-alt"
+            />
           </Link>
         </li>
       </ul>
-      <footer className="md:w-full md:block hidden">
-        <Link to={"/user"} className="block w-full sm:px-3">
-          <div className="user-card flex items-center gap-3 w-full lg:py-2 lg:px-3 px-1 lg:bg-gray-100 rounded-lg">
-            <img
-              src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"
-              alt="user avatar"
-              className="lg:w-[60px] lg:h-[60px] md:w-full w-[50px] rounded-full"
-            />
-            <div className="lg:block hidden">
-              <p className="name">Awesh Choudhary</p>
-              <p className="username">@aweshchoudhary</p>
-            </div>
-          </div>
-        </Link>
-      </footer>
+      <div className="flex items-center gap-3 lg:py-3 lg:justify-start justify-center lg:px-5 p-0 lg:bg-gray-100 rounded-full">
+        <div className="shrink-0">
+          <img
+            src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=461&q=80"
+            alt="avatar"
+            className="w-[50px] h-[50px] rounded-full object-cover"
+          />
+        </div>
+        <div className="lg:block hidden">
+          <h3 className="font-medium">Awesh Choudhary</h3>
+          <p className="text-base">@aweshchoudhary</p>
+        </div>
+      </div>
     </aside>
   );
-};
-
-export default Sidebar;
+}

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const Leftbar = () => {
   return (
-    <aside className="lg:w-[27vw] shrink-0 border-l p-5 lg:block hidden overflow-y-auto h-screen">
+    <aside className="lg:w-[400px] shrink-0 border-l p-5 lg:block hidden overflow-y-auto h-screen">
       <div className="hashtags">
         <h2 className="text-2xl font-semibold">What's Happening</h2>
         <ul className="py-5">
