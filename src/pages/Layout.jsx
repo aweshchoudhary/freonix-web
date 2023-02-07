@@ -5,9 +5,9 @@ import { Sidebar, Leftbar } from "../components";
 const Layout = () => {
   return (
     <>
-      <main className="flex flex-wrap md:flex-row flex-col-reverse items-start justify-start">
+      <main className="flex flex-wrap md:flex-row flex-col-reverse">
         <Sidebar />
-        <article className="lg:w-[50vw] md:w-[90vw] h-[78vh] md:flex-1 md:h-screen overflow-y-auto">
+        <article className="lg:w-[50vw] md:w-[90vw] h-[93vh] md:flex-1 md:h-screen overflow-y-auto">
           <Suspense fallback="loading...">
             <Outlet />
           </Suspense>

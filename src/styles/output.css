@@ -513,6 +513,10 @@ video {
   --tw-backdrop-sepia:  ;
 }
 
+.absolute {
+  position: absolute;
+}
+
 .sticky {
   position: sticky;
 }
@@ -523,6 +527,10 @@ video {
 
 .left-0 {
   left: 0px;
+}
+
+.bottom-0 {
+  bottom: 0px;
 }
 
 .z-\[99\] {
@@ -593,6 +601,10 @@ video {
   height: 50px;
 }
 
+.h-\[7vh\] {
+  height: 7vh;
+}
+
 .h-screen {
   height: 100vh;
 }
@@ -601,8 +613,16 @@ video {
   height: 60px;
 }
 
-.h-\[90vh\] {
-  height: 90vh;
+.h-\[5vh\] {
+  height: 5vh;
+}
+
+.h-\[10vh\] {
+  height: 10vh;
+}
+
+.h-\[78vh\] {
+  height: 78vh;
 }
 
 .h-\[160px\] {
@@ -617,32 +637,20 @@ video {
   height: 120px;
 }
 
-.h-\[80vh\] {
-  height: 80vh;
+.h-\[90vh\] {
+  height: 90vh;
 }
 
-.h-\[10vh\] {
-  height: 10vh;
-}
-
-.h-\[5vh\] {
-  height: 5vh;
+.h-\[92vh\] {
+  height: 92vh;
 }
 
 .h-\[8vh\] {
   height: 8vh;
 }
 
-.h-\[7vh\] {
-  height: 7vh;
-}
-
-.h-\[13vh\] {
-  height: 13vh;
-}
-
-.h-\[78vh\] {
-  height: 78vh;
+.h-\[93vh\] {
+  height: 93vh;
 }
 
 .w-\[50px\] {
@@ -702,16 +710,8 @@ video {
   flex-wrap: wrap;
 }
 
-.items-start {
-  align-items: flex-start;
-}
-
 .items-center {
   align-items: center;
-}
-
-.justify-start {
-  justify-content: flex-start;
 }
 
 .justify-end {
