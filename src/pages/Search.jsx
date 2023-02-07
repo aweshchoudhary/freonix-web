@@ -1,14 +1,12 @@
-import React from "react";
-import PageHeader from "../components/PageHeader";
+import Loading from "../components/Loading";
 
 const Search = () => {
+  const loading = true;
+  if (loading) return <Loading />;
   return (
-    <>
-      <PageHeader icon={"uil:search"} name="Search" />
-      <section>
-        <h1>hello</h1>
-      </section>
-    </>
+    <section>
+      <h1>hello</h1>
+    </section>
   );
 };
 

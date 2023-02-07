@@ -1,20 +1,9 @@
 import Card from "../components/Card";
 import { Icon } from "@iconify/react";
-import { useNavigate } from "react-router-dom";
 
 const User = () => {
-  const navigate = useNavigate();
-
   return (
     <>
-      <header className="py-2 px-5 border-b sticky top-0 left-0 z-[99] bg-white">
-        <h2 className="text-xl font-medium flex items-center gap-5">
-          <button onClick={() => navigate(-1)}>
-            <Icon className="text-4xl" icon="mdi:arrow-left-thin" />
-          </button>
-          Awesh Choudhary
-        </h2>
-      </header>
       <section>
         <div className="header">
           <img

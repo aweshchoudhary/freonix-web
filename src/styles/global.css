@@ -31,3 +31,23 @@ html {
   overflow: hidden;
   font-family: "Poppins", sans-serif;
 }
+
+.loader-1 {
+  width: 60px;
+  height: 60px;
+  border: 7px solid #e2e2e2;
+  border-bottom-color: var(--primary);
+  border-radius: 50%;
+  display: inline-block;
+  -webkit-animation: rotation 0.5s linear infinite;
+  animation: rotation 0.5s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

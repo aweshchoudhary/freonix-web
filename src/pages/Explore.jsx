@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
-import PageHeader from "../components/PageHeader";
 
 const Explore = () => {
   return (
     <>
-      <PageHeader icon={"ph:hash-bold"} name="Explore" />
       <section className="md:px-5 px-3 py-5">
         <div className="hashtags">
           <h2 className="text-2xl font-semibold">Popular Topics</h2>
