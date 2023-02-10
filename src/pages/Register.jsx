@@ -1,45 +1,27 @@
 import { Icon } from "@iconify/react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { auth, provider } from "../config/firebase";
-import {
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser, signInWithGoogle } from "../store/auth/authSlice";
 
 const Register = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const { loading, success, error } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
-  const register = async () => {
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then((credential) => {
-        const user = credential.user;
-        console.log(user);
-      })
-      .catch((err) => {
-        const errMessage = err.message;
-        setError(errMessage);
-      });
-  };
-  const registerGoogle = async () => {
-    await signInWithPopup(auth, provider)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        const user = result.user;
-        console.log(credential, token, user);
-      })
-      .catch((err) => {
-        const errMessage = err.message;
-        const email = err.customData.email;
-        const credential = GoogleAuthProvider.credentialFromError(err);
-        console.table(errMessage, email, credential);
-      });
-  };
+  const dispatch = useDispatch();
+  function register() {
+    dispatch(registerUser({ email, password }));
+  }
+  function registerGoogle() {
+    dispatch(signInWithGoogle());
+  }
+
+  useEffect(() => {
+    if (success) navigate("/", { replace: true });
+  }, [success, loading]);
 
   return (
     <div className="flex items-center justify-center md:p-10">
@@ -67,6 +49,7 @@ const Register = () => {
                   <input
                     type="text"
                     placeholder="Full Name"
+                    disabled={loading}
                     id="fullname"
                     name="fullname"
                     className="w-full py-3 px-5 border rounded-full"
@@ -77,6 +60,7 @@ const Register = () => {
                   <input
                     type="text"
                     placeholder="Email"
+                    disabled={loading}
                     id="email"
                     name="email"
                     className="w-full py-3 px-5 border rounded-full"
@@ -86,6 +70,7 @@ const Register = () => {
                 <div>
                   <input
                     type="password"
+                    disabled={loading}
                     placeholder="Password"
                     id="password"
                     name="password"
@@ -99,7 +84,7 @@ const Register = () => {
                     className="w-full py-3 bg-primary rounded-full text-white"
                     onClick={register}
                   >
-                    Create Account
+                    {loading ? "Loading..." : "Create Account"}
                   </button>
                 </div>
               </form>

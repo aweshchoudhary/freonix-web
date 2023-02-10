@@ -6,7 +6,7 @@ export default function Sidebar() {
   const linkStyle =
     "flex py-3 text-lg lg:px-5 px-3 items-center gap-4 w-full h-full";
   return (
-    <aside className="sm:flex hidden flex-col h-screen justify-between p-5 lg:w-[300px] w-[100px] border-r">
+    <aside className="sm:flex hidden flex-col h-screen justify-between p-5 lg:w-[350px] w-[100px] border-r">
       <div className="logo flex items-center justify-center gap-4  ">
         <img src="/assets/logo-dark.png" alt="logo dark" className="w-[40px]" />
         <span className="text-3xl font-bold lg:block hidden">Twitter</span>

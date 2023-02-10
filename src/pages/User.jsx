@@ -1,7 +1,17 @@
 import Card from "../components/Card";
 import { Icon } from "@iconify/react";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../store/auth/authSlice";
 
 const User = () => {
+  const { userid } = useParams();
+  const loggedUserId = useSelector((state) => state.user.userid);
+  const dispatch = useDispatch();
+  function logoutUser() {
+    dispatch(logout());
+  }
+
   return (
     <>
       <section>
@@ -22,9 +32,18 @@ const User = () => {
               />
             </div>
             <div>
-              <button className="py-2 rounded px-5 border-2 border-primary text-primary">
-                follow
-              </button>
+              {userid === loggedUserId ? (
+                <button
+                  onClick={logoutUser}
+                  className="py-2 rounded px-5 border-2 border-primary text-primary"
+                >
+                  Logout
+                </button>
+              ) : (
+                <button className="py-2 rounded px-5 border-2 border-primary text-primary">
+                  follow
+                </button>
+              )}
             </div>
           </div>
           <div>
@@ -66,9 +85,9 @@ const User = () => {
         </div>
       </section>
       <section className="py-5">
+        {/* <Card />
         <Card />
-        <Card />
-        <Card />
+        <Card /> */}
       </section>
     </>
   );
