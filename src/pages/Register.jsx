@@ -13,14 +13,21 @@ const Register = () => {
 
   const dispatch = useDispatch();
   function register() {
-    dispatch(registerUser({ email, password }));
+    dispatch(
+      registerUser({
+        email,
+        password,
+        displayName: fullName,
+        phone: Number(9015077510),
+      })
+    );
   }
   function registerGoogle() {
     dispatch(signInWithGoogle());
   }
 
   useEffect(() => {
-    if (success) navigate("/", { replace: true });
+    if (success) setTimeout(() => navigate("/", { replace: true }), 1000);
   }, [success, loading]);
 
   return (
@@ -44,12 +51,18 @@ const Register = () => {
               <form className="flex flex-col gap-4">
                 <div>
                   {error && <p className="text-lg text-red-500">{error}</p>}
+                  {success && (
+                    <p className="text-lg text-green-500">
+                      Register Successfully, Redirecting
+                    </p>
+                  )}
                 </div>
                 <div>
                   <input
                     type="text"
                     placeholder="Full Name"
                     disabled={loading}
+                    autoComplete="off"
                     id="fullname"
                     name="fullname"
                     className="w-full py-3 px-5 border rounded-full"
@@ -61,6 +74,7 @@ const Register = () => {
                     type="text"
                     placeholder="Email"
                     disabled={loading}
+                    autoComplete="off"
                     id="email"
                     name="email"
                     className="w-full py-3 px-5 border rounded-full"
@@ -71,6 +85,7 @@ const Register = () => {
                   <input
                     type="password"
                     disabled={loading}
+                    autoComplete="off"
                     placeholder="Password"
                     id="password"
                     name="password"

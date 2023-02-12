@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   signInWithPopup,
-  GoogleAuthProvider,
 } from "firebase/auth";
-import { auth, provider } from "../../config/firebase";
+import { auth, db, provider } from "../../config/firebase";
+import { doc, setDoc } from "firebase/firestore";
 import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
@@ -30,6 +31,19 @@ export const registerUser = createAsyncThunk(
         user.email,
         user.password
       );
+      const loggedUser = credentials.user;
+      const newUser = {
+        displayName: user.displayName,
+        email: loggedUser.email,
+        followers: 0,
+        followings: 0,
+        location: null,
+        description: null,
+        username: null,
+        cover: null,
+        avatar: null,
+      };
+      await setDoc(doc(db, "users", loggedUser.uid), newUser);
       return credentials.user;
     } catch (error) {
       return thunkApi.rejectWithValue(error.message);
@@ -44,6 +58,22 @@ export const signInWithGoogle = createAsyncThunk(
       return { ...result.user };
     } catch (err) {
       return thunkApi.rejectWithValue(err.message);
+    }
+  }
+);
+
+export const loginUser = createAsyncThunk(
+  "auth/login",
+  async (user, thunkApi) => {
+    try {
+      const credentails = await signInWithEmailAndPassword(
+        auth,
+        user.email,
+        user.password
+      );
+      return credentails.user;
+    } catch (error) {
+      thunkApi.rejectWithValue(error.message);
     }
   }
 );
@@ -73,6 +103,10 @@ const authSlice = createSlice({
       state.error = null;
       state.success = true;
 
+      state.userid = action.payload.uid;
+      state.accessToken = action.payload.stsTokenManager.accessToken;
+      state.refreshToken = action.payload.stsTokenManager.refreshToken;
+
       cookies.set("userid", action.payload.uid, {
         expires: exdate,
       });
@@ -98,6 +132,10 @@ const authSlice = createSlice({
       state.error = null;
       state.success = true;
 
+      state.userid = action.payload.uid;
+      state.accessToken = action.payload.stsTokenManager.accessToken;
+      state.refreshToken = action.payload.stsTokenManager.refreshToken;
+
       cookies.set("userid", action.payload.uid, {
         expires: exdate,
       });
@@ -109,6 +147,36 @@ const authSlice = createSlice({
       });
     });
     builder.addCase(signInWithGoogle.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.success = false;
+    });
+
+    builder.addCase(loginUser.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+      state.success = false;
+    });
+    builder.addCase(loginUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.success = true;
+
+      state.userid = action.payload.uid;
+      state.accessToken = action.payload.stsTokenManager.accessToken;
+      state.refreshToken = action.payload.stsTokenManager.refreshToken;
+
+      cookies.set("userid", action.payload.uid, {
+        expires: exdate,
+      });
+      cookies.set("accessToken", action.payload.stsTokenManager.accessToken, {
+        expires: exdate,
+      });
+      cookies.set("refreshToken", action.payload.stsTokenManager.refreshToken, {
+        expires: exdate,
+      });
+    });
+    builder.addCase(loginUser.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
       state.success = false;

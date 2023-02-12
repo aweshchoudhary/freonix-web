@@ -1,13 +1,16 @@
 import { Icon } from "@iconify/react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 export default function Sidebar() {
   const liStyle = "hover:bg-gray-100 lg:w-full hover:text-primary rounded-full";
   const linkStyle =
     "flex py-3 text-lg lg:px-5 px-3 items-center gap-4 w-full h-full";
+  const userid = useSelector((state) => state?.auth?.userid);
+
   return (
     <aside className="sm:flex hidden flex-col h-screen justify-between p-5 lg:w-[350px] w-[100px] border-r">
-      <div className="logo flex items-center justify-center gap-4  ">
+      <div className="logo flex items-center gap-4 px-5  ">
         <img src="/assets/logo-dark.png" alt="logo dark" className="w-[40px]" />
         <span className="text-3xl font-bold lg:block hidden">Twitter</span>
       </div>
@@ -66,7 +69,10 @@ export default function Sidebar() {
           </Link>
         </li>
       </ul>
-      <div className="flex items-center gap-3 lg:py-3 lg:justify-start justify-center lg:px-5 p-0 lg:bg-gray-100 rounded-full">
+      <Link
+        to={`/user/${userid}`}
+        className="flex items-center gap-3 lg:py-3 lg:justify-start justify-center lg:px-5 p-0 lg:bg-gray-100 rounded-full"
+      >
         <div className="shrink-0">
           <img
             src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=461&q=80"
@@ -78,7 +84,7 @@ export default function Sidebar() {
           <h3 className="font-medium">Awesh Choudhary</h3>
           <p className="text-base">@aweshchoudhary</p>
         </div>
-      </div>
+      </Link>
     </aside>
   );
 }

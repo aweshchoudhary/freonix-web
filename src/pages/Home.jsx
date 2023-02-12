@@ -16,8 +16,8 @@ const Home = () => {
       });
     });
   };
-  console.log(posts);
   const componentWillMount = useRef(false);
+
   useEffect(() => {
     componentWillMount.current && getAllPostsByLimit();
     return () => {

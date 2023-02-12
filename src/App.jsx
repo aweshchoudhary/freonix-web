@@ -1,8 +1,10 @@
 import { lazy, Suspense } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
+import Loading from "./components/Loading";
 
 import Layout from "./pages/Layout";
+
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
 const User = lazy(() => import("./pages/User"));
@@ -11,10 +13,11 @@ const Notifications = lazy(() => import("./pages/Notifications"));
 const Messages = lazy(() => import("./pages/Messages"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
+const Update = lazy(() => import("./pages/Update"));
 
 const App = () => {
   const { userid, accessToken, refreshToken } = useSelector(
-    (state) => state.user
+    (state) => state.auth
   );
 
   return (
@@ -71,6 +74,16 @@ const App = () => {
           }
         />
         <Route
+          path="update"
+          element={
+            userid && refreshToken && accessToken ? (
+              <Update />
+            ) : (
+              <Navigate to={"/login"} />
+            )
+          }
+        />
+        <Route
           path="messages"
           element={
             userid && refreshToken && accessToken ? (
@@ -85,7 +98,7 @@ const App = () => {
       <Route
         path="login"
         element={
-          <Suspense fallback={"Loading..."}>
+          <Suspense fallback={<Loading />}>
             {userid && refreshToken && accessToken ? (
               <Navigate to="/" />
             ) : (
@@ -97,7 +110,7 @@ const App = () => {
       <Route
         path="register"
         element={
-          <Suspense fallback={"Loading..."}>
+          <Suspense fallback={<Loading />}>
             {userid && refreshToken && accessToken ? (
               <Navigate to="/" />
             ) : (

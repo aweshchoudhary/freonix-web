@@ -1,26 +1,23 @@
 import { Icon } from "@iconify/react";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { loginUser, signInWithGoogle } from "../store/auth/authSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+  const { error, loading } = useSelector((state) => state.user);
 
-  const login = async () => {
-    // const auth = getAuth();
-    await signInWithEmailAndPassword(auth, email, password)
-      .then((credential) => {
-        const user = credential.user;
-        console.log(user);
-      })
-      .catch((err) => {
-        const errorMessage = err.message;
-        setError(errorMessage);
-      });
-  };
+  function login() {
+    dispatch(loginUser({ email, password }));
+  }
+
+  function loginGoogle() {
+    dispatch(signInWithGoogle());
+  }
+
   return (
     <div className="flex items-center justify-center md:p-10">
       <div className="lg:w-[40%] md:w-1/2 w-full shrink-0 md:p-10 p-5 sm:border">
@@ -31,7 +28,10 @@ const Login = () => {
           <article>
             <section>
               <div className="mb-5 pb-5 border-b">
-                <button className="flex items-center gap-3 py-3 px-5 border w-full rounded-full">
+                <button
+                  onClick={loginGoogle}
+                  className="flex items-center gap-3 py-3 px-5 border w-full rounded-full"
+                >
                   <Icon icon="logos:google-icon" className="text-3xl" />
                   Continue with google
                 </button>
@@ -46,6 +46,7 @@ const Login = () => {
                     placeholder="Email"
                     id="email"
                     name="email"
+                    disabled={loading}
                     className="w-full py-3 px-5 border rounded-full"
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -55,6 +56,7 @@ const Login = () => {
                     type="password"
                     placeholder="Password"
                     id="password"
+                    disabled={loading}
                     name="password"
                     className="w-full py-3 px-5 border rounded-full"
                     onChange={(e) => setPassword(e.target.value)}
