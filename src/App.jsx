@@ -8,7 +8,7 @@ import Layout from "./pages/Layout";
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
 const User = lazy(() => import("./pages/User"));
-const Explore = lazy(() => import("./pages/Explore"));
+const Create = lazy(() => import("./pages/Create"));
 const Notifications = lazy(() => import("./pages/Notifications"));
 const Messages = lazy(() => import("./pages/Messages"));
 const Login = lazy(() => import("./pages/Login"));
@@ -54,10 +54,10 @@ const App = () => {
           }
         />
         <Route
-          path="explore"
+          path="create"
           element={
             userid && refreshToken && accessToken ? (
-              <Explore />
+              <Create />
             ) : (
               <Navigate to={"/login"} />
             )

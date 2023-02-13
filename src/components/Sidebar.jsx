@@ -25,9 +25,9 @@ export default function Sidebar() {
           </Link>
         </li>
         <li className={liStyle}>
-          <Link to={"/explore"} className={linkStyle}>
-            <Icon className="md:text-3xl text-2xl" icon="ph:hash-bold" />
-            <span className="lg:block hidden">Explore</span>
+          <Link to={"/create"} className={linkStyle}>
+            <Icon className="md:text-4xl text-2xl" icon="bxs:pencil" />
+            <span className="lg:block hidden">Create</span>
           </Link>
         </li>
         <li className={liStyle}>
