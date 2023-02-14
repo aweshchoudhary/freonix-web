@@ -8,7 +8,9 @@ const Register = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { loading, success, error, data } = useSelector((state) => state.user);
+  const { loading, success, error, userid } = useSelector(
+    (state) => state.auth
+  );
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -27,8 +29,8 @@ const Register = () => {
   }
 
   useEffect(() => {
-    if (data) setTimeout(() => navigate("/", { replace: true }), 1000);
-  }, [data]);
+    if (userid) setTimeout(() => navigate("/", { replace: true }), 1000);
+  }, [userid]);
 
   return (
     <div className="flex items-center justify-center md:p-10">
