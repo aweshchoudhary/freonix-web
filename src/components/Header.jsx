@@ -1,10 +1,19 @@
 import { Icon } from "@iconify/react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getUserById } from "../store/userSlice";
 
 const Header = () => {
   const linkStyle = "flex items-center gap-5";
   const userid = useSelector((state) => state?.auth?.userid);
+
+  const data = useSelector((state) => state.user.data);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUserById(userid));
+  }, [userid]);
   return (
     <header className="md:hidden flex items-center justify-between px-5 py-3 border-b">
       <div className="logo flex items-center gap-5">
@@ -24,11 +33,17 @@ const Header = () => {
           />
         </Link>
         <Link to={"/user/" + userid}>
-          <img
-            src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80"
-            alt="user avatar"
-            className="w-[40px] rounded-full object-cover"
-          />
+          {data?.avatar ? (
+            <img
+              src={data?.avatar + "?alt=media"}
+              alt="avatar"
+              className="w-[40px] h-[40px] rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-[40px] h-[40px] flex items-center justify-center rounded-full bg-gray-200">
+              <Icon icon={"uil:user"} className="text-3xl text-gray-300" />
+            </div>
+          )}
         </Link>
       </div>
     </header>

@@ -517,6 +517,10 @@ video {
   position: absolute;
 }
 
+.relative {
+  position: relative;
+}
+
 .sticky {
   position: sticky;
 }
@@ -533,8 +537,20 @@ video {
   top: -100%;
 }
 
+.bottom-4 {
+  bottom: 1rem;
+}
+
+.right-4 {
+  right: 1rem;
+}
+
 .z-\[99\] {
   z-index: 99;
+}
+
+.z-10 {
+  z-index: 10;
 }
 
 .mx-auto {
@@ -584,10 +600,6 @@ video {
   display: flex;
 }
 
-.table {
-  display: table;
-}
-
 .hidden {
   display: none;
 }
@@ -620,8 +632,8 @@ video {
   height: 0px;
 }
 
-.h-\[10vh\] {
-  height: 10vh;
+.h-\[80vh\] {
+  height: 80vh;
 }
 
 .h-\[160px\] {
@@ -636,12 +648,12 @@ video {
   height: 120px;
 }
 
-.h-\[20vh\] {
-  height: 20vh;
+.h-\[40px\] {
+  height: 40px;
 }
 
-.h-\[80vh\] {
-  height: 80vh;
+.h-\[200px\] {
+  height: 200px;
 }
 
 .min-h-\[300px\] {
@@ -819,6 +831,11 @@ video {
   border-color: var(--paper);
 }
 
+.bg-gray-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+}
+
 .bg-primary {
   background-color: var(--primary);
 }
@@ -843,6 +860,10 @@ video {
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
+.bg-\[\#00000089\] {
+  background-color: #00000089;
+}
+
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;
@@ -863,6 +884,10 @@ video {
 
 .p-0 {
   padding: 0px;
+}
+
+.p-2 {
+  padding: 0.5rem;
 }
 
 .px-3 {
@@ -903,6 +928,11 @@ video {
   text-align: center;
 }
 
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -916,11 +946,6 @@ video {
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
-}
-
-.text-3xl {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
 }
 
 .text-lg {
@@ -963,13 +988,13 @@ video {
   text-transform: capitalize;
 }
 
-.text-textColor {
-  color: var(--text);
-}
-
 .text-gray-300 {
   --tw-text-opacity: 1;
   color: rgb(209 213 219 / var(--tw-text-opacity));
+}
+
+.text-textColor {
+  color: var(--text);
 }
 
 .text-white {
@@ -1008,6 +1033,10 @@ video {
 .outline-none {
   outline: 2px solid transparent;
   outline-offset: 2px;
+}
+
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .transition {
@@ -1094,6 +1123,10 @@ video {
 
   .md\:h-\[150px\] {
     height: 150px;
+  }
+
+  .md\:h-\[300px\] {
+    height: 300px;
   }
 
   .md\:w-\[60px\] {

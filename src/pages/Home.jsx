@@ -27,7 +27,7 @@ const Home = () => {
   return posts ? (
     <section>
       {posts.map((post, key) => {
-        return <Card key={key} data={post} />;
+        return <Card key={key} postid={post.id} />;
       })}
     </section>
   ) : (

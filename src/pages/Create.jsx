@@ -52,7 +52,7 @@ const Create = () => {
       <form className="md:mt-10 mt-5">
         <div
           onClick={() => imgRef.current.click()}
-          className="mb-5 h-[300px] cursor-pointer bg-gray-50 flex items-center justify-center w-full"
+          className="mb-5 md:h-[300px] h-[200px] cursor-pointer bg-gray-50 flex items-center justify-center w-full"
         >
           {imgUrl ? (
             <img
@@ -61,7 +61,7 @@ const Create = () => {
               alt="post image"
             />
           ) : (
-            <p className="text-center text-3xl font-medium text-gray-300">
+            <p className="text-center md:text-3xl text-xl font-medium text-gray-300">
               Click To Add Picture
             </p>
           )}

@@ -1,12 +1,21 @@
 import { Icon } from "@iconify/react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getUserById } from "../store/userSlice";
 
 export default function Sidebar() {
   const liStyle = "hover:bg-gray-100 lg:w-full hover:text-primary rounded-full";
   const linkStyle =
     "flex py-3 text-lg lg:px-5 px-3 items-center gap-4 w-full h-full";
+
+  const data = useSelector((state) => state.user.data);
   const userid = useSelector((state) => state?.auth?.userid);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUserById(userid));
+  }, [userid]);
 
   return (
     <aside className="sm:flex hidden flex-col h-screen justify-between p-5 lg:w-[350px] w-[100px] border-r">
@@ -74,11 +83,17 @@ export default function Sidebar() {
         className="flex items-center gap-3 lg:py-3 lg:justify-start justify-center lg:px-5 p-0 lg:bg-gray-100 rounded-full"
       >
         <div className="shrink-0">
-          <img
-            src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=461&q=80"
-            alt="avatar"
-            className="w-[50px] h-[50px] rounded-full object-cover"
-          />
+          {data?.avatar ? (
+            <img
+              src={data?.avatar + "?alt=media"}
+              alt="avatar"
+              className="w-[50px] h-[50px] rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-[50px] flex items-center justify-center h-[50px] rounded-full bg-gray-200">
+              <Icon icon={"uil:user"} className="text-3xl text-gray-300" />
+            </div>
+          )}
         </div>
         <div className="lg:block hidden">
           <h3 className="font-medium">Awesh Choudhary</h3>

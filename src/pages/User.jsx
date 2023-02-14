@@ -6,8 +6,10 @@ import { logout } from "../store/auth/authSlice";
 import { useEffect, useRef, useState } from "react";
 import Loading from "../components/Loading";
 import { getUserById } from "../store/userSlice";
-import { ref, uploadBytes } from "firebase/storage";
-import { storage } from "../config/firebase";
+import { deleteObject, ref, uploadBytes } from "firebase/storage";
+import { db, storage } from "../config/firebase";
+import { deleteField, doc, updateDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 const User = () => {
   const { userid } = useParams();
@@ -22,31 +24,106 @@ const User = () => {
   function logoutUser() {
     dispatch(logout());
   }
+  function refreshUser() {
+    dispatch(getUserById(userid));
+  }
 
   async function updataAvatar() {
     let imgPath;
     const [file] = avatarRef.current.files;
-    const avatarImgRef = ref(storage, Date.now() + "-" + file.name);
-    await uploadBytes(avatarImgRef, file)
-      .then((e) => {
-        imgPath =
-          "https://firebasestorage.googleapis.com/v0/b/twitter-clone-362d5.appspot.com/o/" +
-          e.metadata.fullPath;
+    if (data.avatar) {
+      await deleteAvatar();
+    }
+    if (file) {
+      const avatarImgRef = ref(storage, Date.now() + "-" + file.name);
+      await uploadBytes(avatarImgRef, file)
+        .then((e) => {
+          imgPath =
+            "https://firebasestorage.googleapis.com/v0/b/twitter-clone-362d5.appspot.com/o/" +
+            e.metadata.fullPath;
+        })
+        .catch((err) => toast.error(err.message));
+      const avatarDataRef = doc(db, "users", userid);
+      await updateDoc(avatarDataRef, {
+        avatar: imgPath,
       })
-      .catch((err) => console.log(err));
+        .then((e) => {
+          refreshUser();
+          toast.success("Avatar Updated");
+        })
+        .catch((err) => toast.error(err.message));
+    }
+  }
+  async function updateCover() {
+    let imgPath;
+    const [file] = coverRef.current.files;
+    if (data?.cover) {
+      await deleteCover();
+    }
+    if (file) {
+      const coverImgRef = ref(storage, Date.now() + "-" + file.name);
+      await uploadBytes(coverImgRef, file)
+        .then((e) => {
+          imgPath =
+            "https://firebasestorage.googleapis.com/v0/b/twitter-clone-362d5.appspot.com/o/" +
+            e.metadata.fullPath;
+        })
+        .catch((err) => toast.error(err.message));
+      const coverDataRef = doc(db, "users", userid);
+      await updateDoc(coverDataRef, {
+        cover: imgPath,
+      })
+        .then((e) => {
+          refreshUser();
+          toast.success("Cover Updated");
+        })
+        .catch((err) => toast.error(err.message));
+    }
+  }
+  async function deleteCover() {
+    const coverImgRef = ref(storage, data.cover.split("o/")[1]);
+    deleteObject(coverImgRef)
+      .then(async () => {
+        const userRef = doc(db, "users", userid);
+        await updateDoc(userRef, {
+          cover: deleteField(),
+        })
+          .then(() => {
+            toast.success("Cover Deleted Successfully");
+            refreshUser();
+          })
+          .catch((err) => toast.error(err.message));
+      })
+      .catch((err) => toast.error(err.message));
+  }
+  async function deleteAvatar() {
+    const avatarImgRef = ref(storage, data.cover.split("o/")[1]);
+    deleteObject(avatarImgRef)
+      .then(async () => {
+        const userRef = doc(db, "users", userid);
+        await updateDoc(userRef, {
+          avatar: deleteField(),
+        })
+          .then(() => {
+            toast.success("Avatar Deleted Successfully");
+            refreshUser();
+          })
+          .catch((err) => toast.error(err.message));
+      })
+      .catch((err) => toast.error(err.message));
   }
 
   useEffect(() => {
-    dispatch(getUserById(userid));
+    refreshUser();
   }, [userid]);
 
   return !loading && data && !error ? (
     <>
       <section className="header border-b pb-5 mb-5">
-        <div className="header">
+        <div className="header relative">
           {data?.cover ? (
             <img
-              src={data?.cover}
+              src={data?.cover + "?alt=media"}
               alt="cover"
               className="w-full md:h-[250px] h-[160px] object-cover"
             />
@@ -60,15 +137,29 @@ const User = () => {
               </button>
             </div>
           )}
+          {data.cover && (
+            <div className="z-10 absolute bottom-4 right-4 text-white flex items-center gap-4">
+              <button
+                className="bg-[#00000089] p-2"
+                onClick={() => coverRef.current.click()}
+              >
+                <Icon className="text-2xl" icon="jam:refresh-reverse" />
+              </button>
+              <button className="bg-[#00000089] p-2" onClick={deleteCover}>
+                <Icon className="text-2xl" icon="bxs:trash-alt" />
+              </button>
+            </div>
+          )}
         </div>
         <div className="md:px-5 px-3">
           <div className="py-5 h-[100px] flex justify-between">
             <div className="md:-translate-y-[80px] -translate-y-[60px]">
               {data.avatar ? (
                 <img
-                  src={data.avatar}
+                  onClick={() => avatarRef.current.click()}
+                  src={data.avatar + "?alt=media"}
                   alt="user avatar"
-                  className="md:w-[150px] md:h-[150px] w-[120px] h-[120px] border-bg border-4 object-cover rounded-full"
+                  className="md:w-[150px] cursor-pointer md:h-[150px] w-[120px] h-[120px] border-bg border-4 object-cover rounded-full"
                 />
               ) : (
                 <div className="md:w-[150px] md:h-[150px] w-[120px] h-[120px] border-bg border-4 rounded-full bg-gray-100 flex items-center justify-center">
@@ -107,6 +198,7 @@ const User = () => {
               type="file"
               className="absolute -top-full opacity-0"
               ref={avatarRef}
+              onChange={updataAvatar}
               name="avatar"
               id="avatar"
             />
@@ -114,6 +206,7 @@ const User = () => {
               type="file"
               className="absolute -top-full opacity-0"
               ref={coverRef}
+              onChange={updateCover}
               name="cover"
               id="cover"
             />
