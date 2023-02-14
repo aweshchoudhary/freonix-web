@@ -1,7 +1,7 @@
 import Card from "../components/Card";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../config/firebase";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
 
 const Home = () => {
@@ -16,13 +16,9 @@ const Home = () => {
       });
     });
   };
-  const componentWillMount = useRef(false);
 
   useEffect(() => {
-    componentWillMount.current && getAllPostsByLimit();
-    return () => {
-      componentWillMount.current = true;
-    };
+    getAllPostsByLimit();
   }, []);
   return posts ? (
     <section>
