@@ -68,7 +68,7 @@ const Login = () => {
                     className="w-full py-3 bg-primary rounded-full text-white"
                     onClick={login}
                   >
-                    Login
+                    {loading ? "Loading..." : "Login"}
                   </button>
                 </div>
               </form>
