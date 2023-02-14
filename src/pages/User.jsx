@@ -3,14 +3,19 @@ import { Icon } from "@iconify/react";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/auth/authSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Loading from "../components/Loading";
 import { getUserById } from "../store/userSlice";
+import { ref, uploadBytes } from "firebase/storage";
+import { storage } from "../config/firebase";
 
 const User = () => {
   const { userid } = useParams();
   const loggedUserId = useSelector((state) => state.auth.userid);
   const { loading, error, data } = useSelector((state) => state.user);
+
+  const avatarRef = useRef();
+  const coverRef = useRef();
 
   const dispatch = useDispatch();
 
@@ -18,9 +23,21 @@ const User = () => {
     dispatch(logout());
   }
 
+  async function updataAvatar() {
+    let imgPath;
+    const [file] = avatarRef.current.files;
+    const avatarImgRef = ref(storage, Date.now() + "-" + file.name);
+    await uploadBytes(avatarImgRef, file)
+      .then((e) => {
+        imgPath =
+          "https://firebasestorage.googleapis.com/v0/b/twitter-clone-362d5.appspot.com/o/" +
+          e.metadata.fullPath;
+      })
+      .catch((err) => console.log(err));
+  }
+
   useEffect(() => {
     dispatch(getUserById(userid));
-    console.table(data);
   }, [userid]);
 
   return !loading && data && !error ? (
@@ -35,7 +52,10 @@ const User = () => {
             />
           ) : (
             <div className="w-full flex items-center justify-center md:h-[250px] h-[160px] bg-gray-100">
-              <button className="py-2 rounded px-5 border-2 border-primary text-primary">
+              <button
+                onClick={() => coverRef.current.click()}
+                className="py-2 rounded px-5 border-2 border-primary text-primary"
+              >
                 Add Cover Picture
               </button>
             </div>
@@ -52,7 +72,7 @@ const User = () => {
                 />
               ) : (
                 <div className="md:w-[150px] md:h-[150px] w-[120px] h-[120px] border-bg border-4 rounded-full bg-gray-100 flex items-center justify-center">
-                  <button>
+                  <button onClick={() => avatarRef.current.click()}>
                     <Icon
                       icon={"ic:baseline-camera-alt"}
                       className="text-6xl text-gray-300"
@@ -66,13 +86,13 @@ const User = () => {
                 <>
                   <Link
                     to="/update"
-                    className="py-2 mr-3 rounded px-5 border-2 border-primary text-white bg-primary"
+                    className="sm:text-base text-sm py-2 mr-3 rounded px-5 border-2 border-primary text-white bg-primary"
                   >
                     Update
                   </Link>
                   <button
                     onClick={logoutUser}
-                    className="py-2 rounded px-5 border-2 border-primary text-primary"
+                    className="sm:text-base text-sm py-2 rounded px-5 border-2 border-primary text-primary"
                   >
                     Logout
                   </button>
@@ -83,6 +103,20 @@ const User = () => {
                 </button>
               )}
             </div>
+            <input
+              type="file"
+              className="absolute -top-full opacity-0"
+              ref={avatarRef}
+              name="avatar"
+              id="avatar"
+            />
+            <input
+              type="file"
+              className="absolute -top-full opacity-0"
+              ref={coverRef}
+              name="cover"
+              id="cover"
+            />
           </div>
           <div>
             <h2 className="md:text-3xl text-2xl font-medium capitalize">
@@ -90,7 +124,11 @@ const User = () => {
             </h2>
 
             <p className="text-lg text-primary">
-              {data.username || <Link to="/update">@username</Link>}
+              {data.username ? (
+                "@" + data.username
+              ) : (
+                <Link to="/update">@username</Link>
+              )}
             </p>
           </div>
           <div className="mt-5">

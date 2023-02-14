@@ -1,15 +1,15 @@
 import { Icon } from "@iconify/react";
-import { collection, setDoc } from "firebase/firestore";
-import { getBlob, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { db, storage } from "../config/firebase";
+import { uploadPost } from "../store/posts/postsSlice";
 
 const Create = () => {
   const [imgUrl, setImgUrl] = useState("");
   const imgRef = useRef();
+  const dispatch = useDispatch();
   const userid = useSelector((state) => state.auth.userid);
+  const { loading, success, error } = useSelector((state) => state.posts);
   const [description, setDescription] = useState("");
 
   function createImgUrl() {
@@ -23,34 +23,32 @@ const Create = () => {
     imgRef.current.value = "";
   }
 
-  async function uploadPost() {
-    const [file] = imgRef.current.files;
-    const storageRef = ref(storage, Date.now() + "-" + file.name);
-    let post = {
-      img: null,
-      description,
-      userid,
-      comments: [{ comment: null, userid: null }],
-      likes: null,
-    };
-    await uploadBytes(storageRef, file)
-      .then((e) => {
-        post.img =
-          "https://firebasestorage.googleapis.com/v0/b/twitter-clone-362d5.appspot.com/o/" +
-          e.metadata.fullPath;
-      })
-      .catch((err) => console.log(err));
-
-    const postsRef = collection(db, "posts");
-    await setDoc(postsRef, post)
-      .then((e) => console.log(e))
-      .catch((err) => console.log(err));
-    toast.success("post uploaded");
+  function discardPost() {
+    deleteFile();
+    setDescription("");
   }
+
+  async function uploadNewPost() {
+    const [file] = imgRef.current.files;
+    dispatch(uploadPost({ file, description, userid }));
+  }
+
+  useEffect(() => {
+    if (success) {
+      toast.success("Post Has Been Uploaded");
+      discardPost();
+    }
+  }, [success]);
+
+  useEffect(() => {
+    if (error) {
+      toast.success(error);
+    }
+  }, [error]);
 
   return (
     <section className="p-5">
-      <h1 className="text-4xl font-medium">Create</h1>
+      <h1 className="md:text-4xl text-2xl font-medium">Create</h1>
       <form className="md:mt-10 mt-5">
         <div
           onClick={() => imgRef.current.click()}
@@ -91,17 +89,19 @@ const Create = () => {
             className="p-3 text-xl border outline-none w-full min-h-[150px]"
             placeholder="Post Description"
             onChange={(e) => setDescription(e.target.value)}
+            value={description}
           />
         </div>
         <div className="mb-5 flex items-stretch gap-2">
           <button
-            onClick={uploadPost}
+            onClick={uploadNewPost}
             type="button"
             className="px-8 py-3 bg-primary text-white rounded-full"
           >
-            Create Post
+            {loading ? "Loading..." : "Create Post"}
           </button>
           <button
+            onClick={discardPost}
             type="button"
             className="p-3 bg-red-500 text-white rounded-full"
           >

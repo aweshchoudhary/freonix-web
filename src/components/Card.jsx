@@ -1,6 +1,5 @@
 import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
-import Slider from "./Slider";
 
 const Card = ({ data }) => {
   return (
@@ -35,18 +34,7 @@ const Card = ({ data }) => {
           <p>{data.description}</p>
         </div>
         <div className="media mt-5">
-          <Slider>
-            {data?.images?.map((img, key) => {
-              return (
-                <img
-                  key={key}
-                  src={img}
-                  alt="post content"
-                  className="w-full shrink-0 object-contain"
-                />
-              );
-            })}
-          </Slider>
+          <img src={data.img + "?alt=media"} alt="post image" />
         </div>
       </div>
       <footer className="flex items-center gap-10 mt-4">

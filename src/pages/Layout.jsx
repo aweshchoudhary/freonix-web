@@ -9,12 +9,12 @@ const Layout = () => {
   return (
     <>
       <Suspense fallback={<Loading />}>
-        <header>
+        <header className="sm:hidden block">
           <Header />
           <Mobilemenu />
         </header>
       </Suspense>
-      <main className="flex sm:h-screen h-[90vh]">
+      <main className="flex sm:h-screen h-[80vh]">
         <Sidebar />
         <article className="flex-1 overflow-y-auto">
           <Suspense fallback={<Loading />}>

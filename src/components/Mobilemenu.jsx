@@ -13,7 +13,7 @@ const Bottombar = () => {
         </Link>
       </li>
       <li className={liStyle}>
-        <Link to={"/explore"} className={linkStyle}>
+        <Link to={"/create"} className={linkStyle}>
           <Icon className="text-3xl" icon="ph:hash-bold" />
         </Link>
       </li>
