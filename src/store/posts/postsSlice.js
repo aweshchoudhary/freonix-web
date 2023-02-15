@@ -28,6 +28,9 @@ export const uploadPost = createAsyncThunk(
   "posts/upload",
   async (postData, thunkApi) => {
     try {
+      if (postData.file.size > 1048576) {
+        return thunkApi.rejectWithValue("File size limit is 1MB");
+      }
       let post = {
         img: null,
         description: postData.description,

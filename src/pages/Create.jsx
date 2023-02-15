@@ -15,6 +15,10 @@ const Create = () => {
 
   function createImgUrl() {
     const [file] = imgRef.current.files;
+    if (file.size > 1048576 * 3) {
+      imgRef.current.value = "";
+      return toast.error("File size limit is 3MB");
+    }
     if (file) {
       setImgUrl(URL.createObjectURL(file));
     }
@@ -41,7 +45,7 @@ const Create = () => {
 
   useEffect(() => {
     if (error) {
-      toast.success(error);
+      toast.error(error);
     }
   }, [error]);
 
@@ -82,6 +86,7 @@ const Create = () => {
           name="img"
           id="img"
           onChange={createImgUrl}
+          accept="image/png, image/jpeg, image/jpg, image/webp"
         />
         <div>
           <textarea

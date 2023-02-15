@@ -1,32 +1,25 @@
-import Card from "../components/Card";
 import { Icon } from "@iconify/react";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/auth/authSlice";
 import { useEffect, useRef, useState } from "react";
 import Loading from "../components/Loading";
-import { getUserById } from "../store/userSlice";
-import { deleteObject, ref, uploadBytes } from "firebase/storage";
-import { db, storage } from "../config/firebase";
-import {
-  collection,
-  deleteField,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { toast } from "react-toastify";
+
+import refreshUser from "../functions/refreshUser";
+import updateAvatar from "../functions/updateAvatar";
+import deleteCover from "../functions/deleteCover";
+import updateCover from "../functions/updateCover";
+import getUserPosts from "../functions/getUserPosts";
+import followUser from "../functions/followUser";
+import unfollowUser from "../functions/unfollowUser";
+import checkIsFollowed from "../functions/checkIsFollowed";
 
 const User = () => {
   const { userid } = useParams();
   const loggedUserId = useSelector((state) => state.auth.userid);
   const [data, setData] = useState({});
-  const loading = useRef(false);
-  const error = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [posts, setPosts] = useState([]);
   const [followed, setFollowed] = useState(false);
   const avatarRef = useRef();
@@ -37,157 +30,10 @@ const User = () => {
   function logoutUser() {
     dispatch(logout());
   }
-  async function refreshUser() {
-    loading.current = true;
-    try {
-      const usersRef = doc(db, "users", userid);
-      const user = await getDoc(usersRef);
-      if (user.exists()) {
-        const userInfo = { id: user.id, ...user.data() };
-        setData(userInfo);
-      } else {
-        error.current = "User Not Found!";
-      }
-    } catch (err) {
-      error.current = err.message;
-    }
-    loading.current = false;
-  }
-  async function updataAvatar() {
-    let imgPath;
-    const [file] = avatarRef.current.files;
-    if (data.avatar) {
-      await deleteAvatar();
-    }
-    if (file) {
-      const avatarImgRef = ref(storage, Date.now() + "-" + file.name);
-      await uploadBytes(avatarImgRef, file)
-        .then((e) => {
-          imgPath =
-            "https://firebasestorage.googleapis.com/v0/b/twitter-clone-362d5.appspot.com/o/" +
-            e.metadata.fullPath;
-        })
-        .catch((err) => toast.error(err.message));
-      const avatarDataRef = doc(db, "users", userid);
-      await updateDoc(avatarDataRef, {
-        avatar: imgPath,
-      })
-        .then(() => {
-          toast.success("Avatar Updated");
-        })
-        .catch((err) => toast.error(err.message));
-    }
-    refreshUser();
-  }
-  async function updateCover() {
-    let imgPath;
-    const [file] = coverRef.current.files;
-    if (data?.cover) {
-      await deleteCover();
-    }
-    if (file) {
-      const coverImgRef = ref(storage, Date.now() + "-" + file.name);
-      await uploadBytes(coverImgRef, file)
-        .then((e) => {
-          imgPath =
-            "https://firebasestorage.googleapis.com/v0/b/twitter-clone-362d5.appspot.com/o/" +
-            e.metadata.fullPath;
-        })
-        .catch((err) => toast.error(err.message));
-      const coverDataRef = doc(db, "users", userid);
-      await updateDoc(coverDataRef, {
-        cover: imgPath,
-      })
-        .then(() => {
-          toast.success("Cover Updated");
-        })
-        .catch((err) => toast.error(err.message));
-    }
-    refreshUser();
-  }
-  async function deleteCover() {
-    const coverImgRef = ref(storage, data.cover.split("o/")[1]);
-    deleteObject(coverImgRef)
-      .then(async () => {
-        const userRef = doc(db, "users", userid);
-        await updateDoc(userRef, {
-          cover: deleteField(),
-        })
-          .then(() => {
-            toast.success("Cover Deleted Successfully");
-          })
-          .catch((err) => toast.error(err.message));
-      })
-      .catch((err) => toast.error(err.message));
-    refreshUser();
-  }
-  async function deleteAvatar() {
-    const avatarImgRef = ref(storage, data.cover.split("o/")[1]);
-    deleteObject(avatarImgRef)
-      .then(async () => {
-        const userRef = doc(db, "users", userid);
-        await updateDoc(userRef, {
-          avatar: deleteField(),
-        })
-          .then(() => {
-            toast.success("Avatar Deleted Successfully");
-          })
-          .catch((err) => toast.error(err.message));
-      })
-      .catch((err) => toast.error(err.message));
-    refreshUser();
-  }
-  async function getUserPosts() {
-    const q = query(collection(db, "posts"), where("userid", "==", userid));
-    await getDocs(q).then((e) => {
-      e.forEach((post) => {
-        setPosts((prev) => [...prev, post.id]);
-      });
-    });
-  }
-  async function followUser() {
-    const userRef = doc(db, "users", data.id);
-    if (data.id !== loggedUserId) {
-      const addFollower = data.followers
-        ? [...data.followers, loggedUserId]
-        : [loggedUserId];
-      await updateDoc(userRef, {
-        followers: addFollower,
-      })
-        .then(() => console.log("user followed"))
-        .catch((err) => console.log(err));
-    }
-    refreshUser();
-  }
-  async function unfollowUser() {
-    const userRef = doc(db, "users", data.id);
-    if (data?.followers) {
-      const index = data.followers.indexOf(loggedUserId);
-      if (index > -1) {
-        data.followers.splice(index, 1);
-      }
-    }
-    await updateDoc(userRef, {
-      followers: data.followers,
-    });
-    await refreshUser();
-  }
-  function checkIsFollowed() {
-    if (data?.followers) {
-      const isExists = data.followers.indexOf(loggedUserId);
-      if (isExists > -1) {
-        setFollowed(true);
-      } else {
-        setFollowed(false);
-      }
-    }
-  }
-
   const isMounted = useRef(false);
-
   useEffect(() => {
-    refreshUser();
-    isMounted.current && getUserPosts();
+    refreshUser(userid, setData, setError, setLoading);
+    isMounted.current && getUserPosts(userid, setPosts);
     return () => {
       isMounted.current = true;
     };
@@ -195,11 +41,11 @@ const User = () => {
 
   useEffect(() => {
     if (data.followers) {
-      checkIsFollowed();
+      checkIsFollowed(data, loggedUserId, setFollowed);
     }
   }, [data.followers]);
 
-  return !loading.current && data && !error.current ? (
+  return !loading && data && !error ? (
     <>
       <section className="header border-b pb-5 mb-5">
         <div className="header relative">
@@ -227,7 +73,10 @@ const User = () => {
               >
                 <Icon className="text-2xl" icon="jam:refresh-reverse" />
               </button>
-              <button className="bg-[#00000089] p-2" onClick={deleteCover}>
+              <button
+                className="bg-[#00000089] p-2"
+                onClick={() => deleteCover(userid)}
+              >
                 <Icon className="text-2xl" icon="bxs:trash-alt" />
               </button>
             </div>
@@ -272,14 +121,14 @@ const User = () => {
                 </>
               ) : followed ? (
                 <button
-                  onClick={unfollowUser}
+                  onClick={() => unfollowUser(data, loggedUserId, setError)}
                   className="py-2 rounded px-5 border-2 border-primary text-primary"
                 >
                   unfollow
                 </button>
               ) : (
                 <button
-                  onClick={followUser}
+                  onClick={() => followUser(data, loggedUserId, setError)}
                   className="py-2 rounded px-5 border-2 border-primary text-primary"
                 >
                   follow
@@ -290,17 +139,19 @@ const User = () => {
               type="file"
               className="absolute -top-full opacity-0"
               ref={avatarRef}
-              onChange={updataAvatar}
+              onChange={() => updateAvatar(avatarRef, data, userid)}
               name="avatar"
               id="avatar"
+              accept="image/png, image/jpeg, image/jpg, image/webp"
             />
             <input
               type="file"
               className="absolute -top-full opacity-0"
               ref={coverRef}
-              onChange={updateCover}
+              onChange={() => updateCover(coverRef, data, userid)}
               name="cover"
               id="cover"
+              accept="image/png, image/jpeg, image/jpg, image/webp"
             />
           </div>
           <div>

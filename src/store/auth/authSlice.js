@@ -50,7 +50,14 @@ export const signInWithGoogle = createAsyncThunk(
   async (user, thunkApi) => {
     try {
       const result = await signInWithPopup(auth, provider);
-      return { ...result.user };
+      const userData = {
+        displayName: result.user.displayName,
+        email: result.user.email,
+      };
+      if (result.user) {
+        await setDoc(doc(db, "users", result.user.uid), userData);
+      }
+      return { ...result.user, userData };
     } catch (err) {
       return thunkApi.rejectWithValue(err.message);
     }
@@ -102,6 +109,7 @@ const authSlice = createSlice({
       state.accessToken = action.payload.stsTokenManager.accessToken;
       state.refreshToken = action.payload.stsTokenManager.refreshToken;
       state.userData = action.payload.userData;
+
       cookies.set("userid", action.payload.uid, {
         expires: exdate,
       });
@@ -131,6 +139,7 @@ const authSlice = createSlice({
       state.userid = action.payload.uid;
       state.accessToken = action.payload.stsTokenManager.accessToken;
       state.refreshToken = action.payload.stsTokenManager.refreshToken;
+      state.userData = action.payload.userData;
 
       cookies.set("userid", action.payload.uid, {
         expires: exdate,

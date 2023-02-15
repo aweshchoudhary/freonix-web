@@ -10,7 +10,7 @@ export default function Sidebar() {
     "flex py-3 text-lg lg:px-5 px-3 items-center gap-4 w-full h-full";
 
   const userid = useSelector((state) => state?.auth.userid);
-  const { loading, data } = useSelector((state) => state.user);
+  const data = useSelector((state) => state.user.data);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getUserById(userid));
