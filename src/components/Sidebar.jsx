@@ -9,10 +9,9 @@ export default function Sidebar() {
   const linkStyle =
     "flex py-3 text-lg lg:px-5 px-3 items-center gap-4 w-full h-full";
 
-  const data = useSelector((state) => state.user.data);
-  const userid = useSelector((state) => state?.auth?.userid);
+  const userid = useSelector((state) => state?.auth.userid);
+  const { loading, data } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(getUserById(userid));
   }, [userid]);
@@ -96,8 +95,8 @@ export default function Sidebar() {
           )}
         </div>
         <div className="lg:block hidden">
-          <h3 className="font-medium">Awesh Choudhary</h3>
-          <p className="text-base">@aweshchoudhary</p>
+          <h3 className="font-medium">{data?.displayName}</h3>
+          <p className="text-base">@{data?.username || "createuser"}</p>
         </div>
       </Link>
     </aside>

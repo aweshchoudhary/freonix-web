@@ -1,16 +1,15 @@
 import { Icon } from "@iconify/react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import moment from "moment/moment";
+import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { db } from "../config/firebase";
-import { getUserById } from "../store/userSlice";
 
 const Card = ({ postid }) => {
   const [post, setPost] = useState({});
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.data);
+  const [user, setUser] = useState({});
   const userid = useSelector((state) => state.auth.userid);
 
   async function likePost() {
@@ -26,26 +25,37 @@ const Card = ({ postid }) => {
       likes: removeLike,
     }).then(() => getPostData());
   }
-
   const getPostData = async () => {
-    const postRef = doc(db, "posts", postid);
-    await getDoc(postRef)
-      .then((e) => {
-        const postData = e.data();
-        setPost(postData);
-        dispatch(getUserById(postData.userid));
-      })
-      .catch((err) => toast.error(err.message));
+    try {
+      //Fetch Post Data
+      const postRef = doc(db, "posts", postid);
+      const e = await getDoc(postRef);
+      const postData = e.data();
+      setPost(postData);
+
+      //After POST data Fetch User Data
+      const userRef = doc(db, "users", postData.userid);
+      const result = await getDoc(userRef);
+      const postUserData = { id: result.id, ...result.data() };
+      setUser(postUserData);
+    } catch (error) {
+      toast.error(err.message);
+    }
   };
 
+  const isMounted = useRef(false);
   useEffect(() => {
-    getPostData();
+    isMounted.current && getPostData();
+    return () => {
+      isMounted.current = true;
+    };
   }, [postid]);
+
   return (
     <div className="md:p-5 px-3 py-5 border-y border-collapse">
       {user && (
         <Link to={`/user/${post.userid}`}>
-          <header className="flex items-center justify-between">
+          <header>
             <div className="flex items-center md:gap-5 gap-2">
               <div>
                 {user.avatar ? (
@@ -73,9 +83,9 @@ const Card = ({ postid }) => {
               </div>
             </div>
             <div>
-              <p className="flex items-center gap-1 md:mt-0 mt-3 md:justify-start justify-end">
-                <Icon icon="mdi:globe" className="md:text-2xl text-xl" />
-                <span className="md:text-base text-sm">12h ago</span>
+              <p className="flex items-center gap-1 md:mt-0 mt-3 text-gray-500">
+                <Icon icon="mdi:globe" className="md:text-2xl" />
+                <span className="md:text-base text-sm">{post.createdAt}</span>
               </p>
             </div>
           </header>

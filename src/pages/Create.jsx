@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react";
+import moment from "moment/moment";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -27,12 +28,10 @@ const Create = () => {
     deleteFile();
     setDescription("");
   }
-
   async function uploadNewPost() {
     const [file] = imgRef.current.files;
     dispatch(uploadPost({ file, description, userid }));
   }
-
   useEffect(() => {
     if (success) {
       toast.success("Post Has Been Uploaded");

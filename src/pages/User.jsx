@@ -8,14 +8,27 @@ import Loading from "../components/Loading";
 import { getUserById } from "../store/userSlice";
 import { deleteObject, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "../config/firebase";
-import { deleteField, doc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteField,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { toast } from "react-toastify";
 
 const User = () => {
   const { userid } = useParams();
   const loggedUserId = useSelector((state) => state.auth.userid);
-  const { loading, error, data } = useSelector((state) => state.user);
-
+  const [data, setData] = useState({});
+  const loading = useRef(false);
+  const error = useRef(null);
+  const [posts, setPosts] = useState([]);
+  const [followed, setFollowed] = useState(false);
   const avatarRef = useRef();
   const coverRef = useRef();
 
@@ -24,10 +37,22 @@ const User = () => {
   function logoutUser() {
     dispatch(logout());
   }
-  function refreshUser() {
-    dispatch(getUserById(userid));
+  async function refreshUser() {
+    loading.current = true;
+    try {
+      const usersRef = doc(db, "users", userid);
+      const user = await getDoc(usersRef);
+      if (user.exists()) {
+        const userInfo = { id: user.id, ...user.data() };
+        setData(userInfo);
+      } else {
+        error.current = "User Not Found!";
+      }
+    } catch (err) {
+      error.current = err.message;
+    }
+    loading.current = false;
   }
-
   async function updataAvatar() {
     let imgPath;
     const [file] = avatarRef.current.files;
@@ -47,12 +72,12 @@ const User = () => {
       await updateDoc(avatarDataRef, {
         avatar: imgPath,
       })
-        .then((e) => {
-          refreshUser();
+        .then(() => {
           toast.success("Avatar Updated");
         })
         .catch((err) => toast.error(err.message));
     }
+    refreshUser();
   }
   async function updateCover() {
     let imgPath;
@@ -73,12 +98,12 @@ const User = () => {
       await updateDoc(coverDataRef, {
         cover: imgPath,
       })
-        .then((e) => {
-          refreshUser();
+        .then(() => {
           toast.success("Cover Updated");
         })
         .catch((err) => toast.error(err.message));
     }
+    refreshUser();
   }
   async function deleteCover() {
     const coverImgRef = ref(storage, data.cover.split("o/")[1]);
@@ -90,11 +115,11 @@ const User = () => {
         })
           .then(() => {
             toast.success("Cover Deleted Successfully");
-            refreshUser();
           })
           .catch((err) => toast.error(err.message));
       })
       .catch((err) => toast.error(err.message));
+    refreshUser();
   }
   async function deleteAvatar() {
     const avatarImgRef = ref(storage, data.cover.split("o/")[1]);
@@ -106,18 +131,75 @@ const User = () => {
         })
           .then(() => {
             toast.success("Avatar Deleted Successfully");
-            refreshUser();
           })
           .catch((err) => toast.error(err.message));
       })
       .catch((err) => toast.error(err.message));
+    refreshUser();
   }
+  async function getUserPosts() {
+    const q = query(collection(db, "posts"), where("userid", "==", userid));
+    await getDocs(q).then((e) => {
+      e.forEach((post) => {
+        setPosts((prev) => [...prev, post.id]);
+      });
+    });
+  }
+  async function followUser() {
+    const userRef = doc(db, "users", data.id);
+    if (data.id !== loggedUserId) {
+      const addFollower = data.followers
+        ? [...data.followers, loggedUserId]
+        : [loggedUserId];
+      await updateDoc(userRef, {
+        followers: addFollower,
+      })
+        .then(() => console.log("user followed"))
+        .catch((err) => console.log(err));
+    }
+    refreshUser();
+  }
+  async function unfollowUser() {
+    const userRef = doc(db, "users", data.id);
+    if (data?.followers) {
+      const index = data.followers.indexOf(loggedUserId);
+      if (index > -1) {
+        data.followers.splice(index, 1);
+      }
+    }
+    await updateDoc(userRef, {
+      followers: data.followers,
+    });
+    await refreshUser();
+  }
+  function checkIsFollowed() {
+    if (data?.followers) {
+      const isExists = data.followers.indexOf(loggedUserId);
+      if (isExists > -1) {
+        setFollowed(true);
+      } else {
+        setFollowed(false);
+      }
+    }
+  }
+
+  const isMounted = useRef(false);
 
   useEffect(() => {
     refreshUser();
+    isMounted.current && getUserPosts();
+    return () => {
+      isMounted.current = true;
+    };
   }, [userid]);
 
-  return !loading && data && !error ? (
+  useEffect(() => {
+    if (data.followers) {
+      checkIsFollowed();
+    }
+  }, [data.followers]);
+
+  return !loading.current && data && !error.current ? (
     <>
       <section className="header border-b pb-5 mb-5">
         <div className="header relative">
@@ -188,8 +270,18 @@ const User = () => {
                     Logout
                   </button>
                 </>
+              ) : followed ? (
+                <button
+                  onClick={unfollowUser}
+                  className="py-2 rounded px-5 border-2 border-primary text-primary"
+                >
+                  unfollow
+                </button>
               ) : (
-                <button className="py-2 rounded px-5 border-2 border-primary text-primary">
+                <button
+                  onClick={followUser}
+                  className="py-2 rounded px-5 border-2 border-primary text-primary"
+                >
                   follow
                 </button>
               )}
@@ -230,13 +322,13 @@ const User = () => {
           <div className="flex items-center md:gap-5 gap-x-5 gap-y-2 mt-3 flex-wrap text-gray-700">
             <span>
               <span className="text-lg font-semibold text-black">
-                {data.followers}
+                {data?.followers?.length || 0}
               </span>{" "}
               Followers
             </span>
             <span>
               <span className="text-lg font-semibold text-black">
-                {data.followings}
+                {data?.followings?.length || 0}
               </span>{" "}
               Following
             </span>
@@ -257,11 +349,12 @@ const User = () => {
           </div>
         </div>
       </section>
-      <section className="py-5">
-        <h3 className="text-2xl font-medium text-center">
-          Don't Have Posts Yet.
-        </h3>
-      </section>
+      {/* <section className="py-5">
+        {posts &&
+          posts.map((item, id) => {
+            // return <Card key={id} postid={item} />;
+          })}
+      </section> */}
     </>
   ) : (
     <Loading />

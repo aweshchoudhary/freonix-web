@@ -5,7 +5,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth, db, provider } from "../../config/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, query, setDoc, where } from "firebase/firestore";
 import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
@@ -20,6 +20,7 @@ const initialState = {
   userid: cookies.get("userid") || null,
   accessToken: cookies.get("accessToken") || null,
   refreshToken: cookies.get("refreshToken") || null,
+  userData: null,
 };
 
 export const registerUser = createAsyncThunk(
@@ -35,21 +36,15 @@ export const registerUser = createAsyncThunk(
       const newUser = {
         displayName: user.displayName,
         email: loggedUser.email,
-        followers: 0,
-        followings: 0,
-        location: null,
-        description: null,
-        username: null,
-        cover: null,
-        avatar: null,
       };
       await setDoc(doc(db, "users", loggedUser.uid), newUser);
-      return credentials.user;
+      return { ...credentials.user, userData: newUser };
     } catch (error) {
       return thunkApi.rejectWithValue(error.message);
     }
   }
 );
+
 export const signInWithGoogle = createAsyncThunk(
   "auth/registerGoolgle",
   async (user, thunkApi) => {
@@ -71,7 +66,7 @@ export const loginUser = createAsyncThunk(
         user.email,
         user.password
       );
-      return credentails.user;
+      return { ...credentails.user };
     } catch (error) {
       thunkApi.rejectWithValue(error.message);
     }
@@ -106,7 +101,7 @@ const authSlice = createSlice({
       state.userid = action.payload.uid;
       state.accessToken = action.payload.stsTokenManager.accessToken;
       state.refreshToken = action.payload.stsTokenManager.refreshToken;
-
+      state.userData = action.payload.userData;
       cookies.set("userid", action.payload.uid, {
         expires: exdate,
       });
@@ -122,6 +117,7 @@ const authSlice = createSlice({
       state.error = action.payload;
       state.success = false;
     });
+
     builder.addCase(signInWithGoogle.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -161,7 +157,6 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.success = true;
-
       state.userid = action.payload.uid;
       state.accessToken = action.payload.stsTokenManager.accessToken;
       state.refreshToken = action.payload.stsTokenManager.refreshToken;
