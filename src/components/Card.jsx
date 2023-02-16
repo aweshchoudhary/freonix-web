@@ -1,6 +1,5 @@
 import { Icon } from "@iconify/react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import moment from "moment/moment";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -45,12 +44,9 @@ const Card = ({ postid }) => {
 
   console.log(post);
   console.log(user);
-  const isMounted = useRef(false);
+
   useEffect(() => {
-    isMounted.current && getPostData();
-    return () => {
-      isMounted.current = true;
-    };
+    getPostData();
   }, [postid]);
 
   return (
