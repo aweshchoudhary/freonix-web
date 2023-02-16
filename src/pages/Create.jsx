@@ -50,7 +50,7 @@ const Create = () => {
   }, [error]);
 
   return (
-    <section className="p-5">
+    <section className="md:p-5 px-5">
       {/* <h1 className="md:text-4xl text-2xl font-medium">Create</h1> */}
       <form className="md:mt-10 mt-5">
         <div
@@ -64,9 +64,12 @@ const Create = () => {
               alt="post image"
             />
           ) : (
-            <div className="flex flex-col items-center gap-3 text-primary">
-              <Icon icon={"entypo:folder-images"} className="text-8xl" />
-              <p className="text-center text-xl font-medium">
+            <div className="flex flex-col items-center gap-3 text-gray-500">
+              <Icon
+                icon={"entypo:folder-images"}
+                className="md:text-8xl text-5xl"
+              />
+              <p className="text-center md:text-xl font-medium">
                 Click To Add Picture
               </p>
             </div>
@@ -93,7 +96,7 @@ const Create = () => {
         />
         <div>
           <textarea
-            className="p-3 text-xl border outline-none w-full min-h-[150px]"
+            className="p-3 border outline-none w-full md:min-h-[150px] h-[100px]"
             placeholder="Post Description"
             onChange={(e) => setDescription(e.target.value)}
             value={description}

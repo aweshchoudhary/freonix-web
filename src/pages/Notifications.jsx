@@ -1,6 +1,15 @@
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import useRefreshUser from "../hooks/useRefreshUser";
 
 const Notifications = () => {
+  const userid = useSelector((state) => state.auth.userid);
+  const { fetchUser, data } = useRefreshUser(userid);
+  console.log(data);
+  useEffect(() => {
+    fetchUser();
+  }, []);
   return (
     <>
       <section>

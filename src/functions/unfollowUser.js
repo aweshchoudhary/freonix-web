@@ -2,7 +2,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { db } from "../config/firebase";
 
-async function unfollowUser(data, loggedUserId) {
+async function unfollowUser(data, loggedUserId, refreshUser) {
   try {
     if (data?.followers) {
       const userRef = doc(db, "users", data.id);
@@ -28,6 +28,7 @@ async function unfollowUser(data, loggedUserId) {
   } catch (err) {
     toast.error(err.message);
   }
+  refreshUser();
 }
 
 export default unfollowUser;

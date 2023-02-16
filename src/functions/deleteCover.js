@@ -3,8 +3,8 @@ import { deleteObject, ref } from "firebase/storage";
 import { toast } from "react-toastify";
 import { db, storage } from "../config/firebase";
 
-async function deleteCover(userid, data) {
-  const coverImgRef = ref(storage, data.cover.split("o/")[1]);
+async function deleteCover(userid, cover, refreshUser) {
+  const coverImgRef = ref(storage, cover.split("o/")[1]);
   deleteObject(coverImgRef)
     .then(async () => {
       const userRef = doc(db, "users", userid);
@@ -17,6 +17,7 @@ async function deleteCover(userid, data) {
         .catch((err) => toast.error(err.message));
     })
     .catch((err) => toast.error(err.message));
+  refreshUser();
 }
 
 export default deleteCover;

@@ -72,9 +72,9 @@ const Search = () => {
           {filterUsers.length ? (
             filterUsers.map((user, id) => {
               return (
-                <li key={id} className="px-5 md:px-10 border-y">
+                <li key={id} className="px-5 md:px-10 bg-white border-b py-3">
                   <Link to={"/user/" + user.id}>
-                    <div className="flex items-center gap-3 my-5">
+                    <div className="flex items-center gap-3 md:my-5">
                       <div>
                         {user.avatar ? (
                           <img
@@ -87,7 +87,7 @@ const Search = () => {
                         )}
                       </div>
                       <div>
-                        <h2 className="text-xl font-medium">
+                        <h2 className="md:text-xl font-medium">
                           {user.displayName}
                         </h2>
                         {user.username && (

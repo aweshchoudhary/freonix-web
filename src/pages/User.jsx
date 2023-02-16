@@ -5,14 +5,14 @@ import { logout } from "../store/auth/authSlice";
 import { useEffect, useRef, useState } from "react";
 import Loading from "../components/Loading";
 
-import refreshUser from "../functions/refreshUser";
+// import refreshUser from "../functions/refreshUser";
+import useRefreshUser from "../hooks/useRefreshUser";
 import updateAvatar from "../functions/updateAvatar";
 import deleteCover from "../functions/deleteCover";
 import updateCover from "../functions/updateCover";
 import getUserPosts from "../functions/getUserPosts";
 import followUser from "../functions/followUser";
 import unfollowUser from "../functions/unfollowUser";
-import checkIsFollowed from "../functions/checkIsFollowed";
 
 const User = () => {
   const { userid } = useParams();
@@ -24,6 +24,7 @@ const User = () => {
   const [followed, setFollowed] = useState(false);
   const avatarRef = useRef();
   const coverRef = useRef();
+  const { refreshUser } = useRefreshUser(userid, setData, setLoading, setError);
 
   const dispatch = useDispatch();
 
@@ -40,10 +41,18 @@ const User = () => {
   }, [userid]);
 
   useEffect(() => {
-    if (data.followers) {
-      checkIsFollowed(data, loggedUserId, setFollowed);
+    function checkIsFollowed() {
+      if (data?.followers) {
+        const isExists = data.followers.indexOf(loggedUserId);
+        if (isExists > -1) {
+          setFollowed(true);
+        } else {
+          setFollowed(false);
+        }
+      }
     }
-  }, [data.followers]);
+    checkIsFollowed();
+  }, [data]);
 
   return !loading && data && !error ? (
     <>
@@ -75,7 +84,7 @@ const User = () => {
               </button>
               <button
                 className="bg-[#00000089] p-2"
-                onClick={() => deleteCover(userid)}
+                onClick={() => deleteCover(userid, data.cover, refreshUser)}
               >
                 <Icon className="text-2xl" icon="bxs:trash-alt" />
               </button>
@@ -121,14 +130,30 @@ const User = () => {
                 </>
               ) : followed ? (
                 <button
-                  onClick={() => unfollowUser(data, loggedUserId, setError)}
+                  onClick={() =>
+                    unfollowUser(
+                      data,
+                      loggedUserId,
+                      setError,
+                      refreshUser,
+                      setFollowed
+                    )
+                  }
                   className="py-2 rounded px-5 border-2 border-primary text-primary"
                 >
                   unfollow
                 </button>
               ) : (
                 <button
-                  onClick={() => followUser(data, loggedUserId, setError)}
+                  onClick={() =>
+                    followUser(
+                      data,
+                      loggedUserId,
+                      setError,
+                      refreshUser,
+                      setFollowed
+                    )
+                  }
                   className="py-2 rounded px-5 border-2 border-primary text-primary"
                 >
                   follow
@@ -139,7 +164,9 @@ const User = () => {
               type="file"
               className="absolute -top-full opacity-0"
               ref={avatarRef}
-              onChange={() => updateAvatar(avatarRef, data, userid)}
+              onChange={() =>
+                updateAvatar(avatarRef, data, userid, refreshUser)
+              }
               name="avatar"
               id="avatar"
               accept="image/png, image/jpeg, image/jpg, image/webp"
@@ -148,7 +175,7 @@ const User = () => {
               type="file"
               className="absolute -top-full opacity-0"
               ref={coverRef}
-              onChange={() => updateCover(coverRef, data, userid)}
+              onChange={() => updateCover(coverRef, data, userid, refreshUser)}
               name="cover"
               id="cover"
               accept="image/png, image/jpeg, image/jpg, image/webp"

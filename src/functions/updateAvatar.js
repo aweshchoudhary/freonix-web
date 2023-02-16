@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { db, storage } from "../config/firebase";
 import deleteAvatar from "./deleteAvatar";
 
-async function updateAvatar(avatarRef, data, userid) {
+async function updateAvatar(avatarRef, data, userid, refreshUser) {
   let imgPath;
   const [file] = avatarRef.current.files;
   if (file.size > 1048576) {
@@ -31,6 +31,7 @@ async function updateAvatar(avatarRef, data, userid) {
       })
       .catch((err) => toast.error(err.message));
   }
+  refreshUser();
 }
 
 export default updateAvatar;

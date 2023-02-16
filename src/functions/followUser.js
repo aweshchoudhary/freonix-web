@@ -2,7 +2,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { db } from "../config/firebase";
 
-async function followUser(data, loggedUserId) {
+async function followUser(data, loggedUserId, refreshUser) {
   try {
     if (data.id !== loggedUserId) {
       const userRef = doc(db, "users", data.id);
@@ -28,6 +28,7 @@ async function followUser(data, loggedUserId) {
   } catch (err) {
     toast.error(err.message);
   }
+  refreshUser();
 }
 
 export default followUser;

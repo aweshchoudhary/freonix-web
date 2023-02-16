@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { db, storage } from "../config/firebase";
 import deleteCover from "./deleteCover";
 
-async function updateCover(coverRef, data, userid) {
+async function updateCover(coverRef, data, userid, refreshUser) {
   let imgPath;
   const [file] = coverRef.current.files;
   if (file.size > 1048576) {
@@ -31,6 +31,7 @@ async function updateCover(coverRef, data, userid) {
       })
       .catch((err) => toast.error(err.message));
   }
+  refreshUser();
 }
 
 export default updateCover;

@@ -3,7 +3,7 @@ import { deleteObject, ref } from "firebase/storage";
 import { toast } from "react-toastify";
 import { db, storage } from "../config/firebase";
 
-async function deleteAvatar(userid, data) {
+async function deleteAvatar(userid, data, refreshUser) {
   const avatarImgRef = ref(storage, data.avatar.split("o/")[1]);
   deleteObject(avatarImgRef)
     .then(async () => {
@@ -17,6 +17,7 @@ async function deleteAvatar(userid, data) {
         .catch((err) => toast.error(err.message));
     })
     .catch((err) => toast.error(err.message));
+  refreshUser();
 }
 
 export default deleteAvatar;

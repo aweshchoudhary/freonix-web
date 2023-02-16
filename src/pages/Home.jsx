@@ -16,7 +16,6 @@ const Home = () => {
       });
     });
   };
-  console.log(posts);
   useEffect(() => {
     getAllPostsByLimit();
   }, []);

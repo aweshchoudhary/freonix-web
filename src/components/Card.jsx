@@ -41,16 +41,12 @@ const Card = ({ postid }) => {
       toast.error(err.message);
     }
   };
-
-  console.log(post);
-  console.log(user);
-
   useEffect(() => {
     getPostData();
   }, [postid]);
 
   return (
-    <div className="md:p-5 bg-white px-3 py-5 md:my-4 my-2 md:first-letter:border">
+    <div className="md:p-5 bg-white px-3 py-5 md:my-4 md:border-none border-b">
       {user && (
         <Link to={`/user/${post.userid}`}>
           <header>

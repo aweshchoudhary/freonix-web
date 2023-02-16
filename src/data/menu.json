@@ -10,7 +10,7 @@
     "id": 2,
     "label": "create",
     "link": "/create",
-    "icon": "ri:add-fill",
+    "icon": "lucide:plus-square",
     "active": false
   },
   {

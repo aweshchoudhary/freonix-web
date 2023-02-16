@@ -29,11 +29,11 @@ const Bottombar = () => {
     });
   }, [pathname]);
   return (
-    <ul className="sm:hidden fixed bottom-0 left-0  bg-white flex items-center border-b w-full px-5 justify-between border-t h-[12vh]">
-      {menu.map((item) => {
+    <ul className="sm:hidden fixed bottom-0 left-0  bg-white flex items-center border-b w-full px-5 justify-between border-t h-[10vh]">
+      {menu.map((item, i) => {
         return (
           item.label !== "message" && (
-            <li className={active[item.label] && "text-primary"}>
+            <li key={i} className={active[item.label] ? "text-primary" : null}>
               <Link to={item.link}>
                 <Icon className="text-2xl" icon={item.icon} />
               </Link>

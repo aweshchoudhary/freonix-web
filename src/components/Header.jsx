@@ -16,7 +16,7 @@ const Header = () => {
     dispatch(getUserById(userid));
   }, [userid]);
   return (
-    <header className="md:hidden flex items-center justify-between px-5 border-b h-[12vh]">
+    <header className="md:hidden flex items-center justify-between px-5 border-b h-[10vh]">
       <div className="logo flex items-center gap-5">
         <Link to="/">
           <img
@@ -27,10 +27,10 @@ const Header = () => {
         </Link>
       </div>
       <div className="flex items-center gap-3">
-        {menu.map((item) => {
+        {menu.map((item, i) => {
           return (
             item.label === "message" && (
-              <Link to={item.link} className={linkStyle}>
+              <Link key={i} to={item.link} className={linkStyle}>
                 <Icon className="text-3xl lg:mx-0 mx-auto" icon={item.icon} />
               </Link>
             )
