@@ -6,7 +6,8 @@
 }
 
 :root {
-  --primary: #1d9bf0;
+  --primary: #0019ff;
+  /* --primary: linear-gradient(270.18deg, #0029ff -3.55%, #00d1ff 107.81%); */
   --paper: #fff;
   --gray: #808080;
   --text: #fff;

@@ -27,7 +27,6 @@ const Create = () => {
     setImgUrl("");
     imgRef.current.value = "";
   }
-
   function discardPost() {
     deleteFile();
     setDescription("");
@@ -36,6 +35,7 @@ const Create = () => {
     const [file] = imgRef.current.files;
     dispatch(uploadPost({ file, description, userid }));
   }
+
   useEffect(() => {
     if (success) {
       toast.success("Post Has Been Uploaded");
@@ -51,11 +51,11 @@ const Create = () => {
 
   return (
     <section className="p-5">
-      <h1 className="md:text-4xl text-2xl font-medium">Create</h1>
+      {/* <h1 className="md:text-4xl text-2xl font-medium">Create</h1> */}
       <form className="md:mt-10 mt-5">
         <div
           onClick={() => imgRef.current.click()}
-          className="mb-5 md:h-[300px] h-[200px] cursor-pointer bg-gray-50 flex items-center justify-center w-full"
+          className="mb-5 md:h-[300px] h-[200px] cursor-pointer bg-white border flex items-center justify-center w-full"
         >
           {imgUrl ? (
             <img
@@ -64,9 +64,12 @@ const Create = () => {
               alt="post image"
             />
           ) : (
-            <p className="text-center md:text-3xl text-xl font-medium text-gray-300">
-              Click To Add Picture
-            </p>
+            <div className="flex flex-col items-center gap-3 text-primary">
+              <Icon icon={"entypo:folder-images"} className="text-8xl" />
+              <p className="text-center text-xl font-medium">
+                Click To Add Picture
+              </p>
+            </div>
           )}
         </div>
         {imgUrl && (
@@ -96,18 +99,19 @@ const Create = () => {
             value={description}
           />
         </div>
-        <div className="mb-5 flex items-stretch gap-2">
+        <div className="my-5 flex items-stretch gap-2">
           <button
             onClick={uploadNewPost}
             type="button"
-            className="px-8 py-3 bg-primary text-white rounded-full"
+            disabled={!description || !imgRef.current.value || loading}
+            className="px-8 py-3 bg-primary text-white rounded-lg disabled:bg-gray-600"
           >
             {loading ? "Loading..." : "Create Post"}
           </button>
           <button
             onClick={discardPost}
             type="button"
-            className="p-3 bg-red-500 text-white rounded-full"
+            className="p-3 bg-red-500 text-white rounded-lg"
           >
             <Icon className="text-2xl" icon="bxs:trash-alt" />
           </button>

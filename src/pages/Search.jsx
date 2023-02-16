@@ -49,7 +49,7 @@ const Search = () => {
       <section className="md:p-10 p-5">
         <h1 className="md:text-4xl text-3xl font-medium">Search</h1>
         <div
-          className={`searchbox flex items-center mt-5 gap-3 border w-full py-2 px-4 ${
+          className={`searchbox bg-white flex items-center mt-5 gap-3 border w-full py-2 px-4 ${
             focus && "outline"
           }`}
         >

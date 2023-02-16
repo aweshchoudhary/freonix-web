@@ -11,18 +11,22 @@ const Layout = () => {
       <Suspense fallback={<Loading />}>
         <header className="sm:hidden block">
           <Header />
-          <Mobilemenu />
         </header>
       </Suspense>
-      <main className="flex sm:h-screen h-[80vh]">
+      <main className="flex md:h-screen overflow-y-auto h-[76vh] bg-gray-50">
         <Sidebar />
-        <article className="flex-1 overflow-y-auto">
+        <article className="md:w-[40%] md:mx-auto w-full shrink-0">
           <Suspense fallback={<Loading />}>
             <Outlet />
           </Suspense>
         </article>
         <Leftbar />
       </main>
+      <footer>
+        <Suspense fallback="loading...">
+          <Mobilemenu />
+        </Suspense>
+      </footer>
     </>
   );
 };

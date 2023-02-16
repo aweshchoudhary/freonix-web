@@ -1,5 +1,5 @@
 import { doc, updateDoc } from "firebase/firestore";
-import { ref } from "firebase/storage";
+import { ref, uploadBytes } from "firebase/storage";
 import { toast } from "react-toastify";
 import { db, storage } from "../config/firebase";
 import deleteCover from "./deleteCover";

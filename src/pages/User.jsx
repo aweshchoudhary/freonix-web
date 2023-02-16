@@ -47,7 +47,7 @@ const User = () => {
 
   return !loading && data && !error ? (
     <>
-      <section className="header border-b pb-5 mb-5">
+      <section className="header border-b pb-5 mb-5 bg-white">
         <div className="header relative">
           {data?.cover ? (
             <img
@@ -90,7 +90,7 @@ const User = () => {
                   onClick={() => avatarRef.current.click()}
                   src={data.avatar + "?alt=media"}
                   alt="user avatar"
-                  className="md:w-[150px] cursor-pointer md:h-[150px] w-[120px] h-[120px] border-bg border-4 object-cover rounded-full"
+                  className="md:w-[150px] cursor-pointer md:h-[150px] w-[120px] h-[120px] border-bg border-4 object-cover rounded-full border-gray-100"
                 />
               ) : (
                 <div className="md:w-[150px] md:h-[150px] w-[120px] h-[120px] border-bg border-4 rounded-full bg-gray-100 flex items-center justify-center">
@@ -167,8 +167,10 @@ const User = () => {
               )}
             </p>
           </div>
-          <div className="mt-5">
-            <p>{data.description || "No Description"}</p>
+          <div className="my-5 pb-5 border-b">
+            <p className="whitespace-pre">
+              {data.description || "No Description"}
+            </p>
           </div>
           <div className="flex items-center md:gap-5 gap-x-5 gap-y-2 mt-3 flex-wrap text-gray-700">
             <span>

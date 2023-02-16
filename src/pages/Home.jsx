@@ -22,9 +22,13 @@ const Home = () => {
   }, []);
   return posts ? (
     <section>
-      {posts.map((post, key) => {
-        return <Card key={key} postid={post.id} />;
-      })}
+      {posts.length ? (
+        posts.map((post, key) => {
+          return <Card key={key} postid={post.id} />;
+        })
+      ) : (
+        <h2>No Posts!</h2>
+      )}
     </section>
   ) : (
     <Loading />

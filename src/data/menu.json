@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "label": "home",
+    "link": "/",
+    "icon": "ri:home-2-line",
+    "active": false
+  },
+  {
+    "id": 2,
+    "label": "create",
+    "link": "/create",
+    "icon": "ri:add-fill",
+    "active": false
+  },
+  {
+    "id": 3,
+    "label": "search",
+    "link": "/search",
+    "icon": "ri:search-line",
+    "active": false
+  },
+  {
+    "id": 4,
+    "label": "notifications",
+    "link": "/notifications",
+    "icon": "ri:notification-2-line",
+    "active": false
+  },
+  {
+    "id": 5,
+    "label": "message",
+    "link": "/message",
+    "icon": "bx:message",
+    "active": false
+  }
+]

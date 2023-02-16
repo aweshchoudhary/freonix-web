@@ -1,37 +1,46 @@
 import { Icon } from "@iconify/react";
-import React from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import menu from "../data/menu.json";
 
 const Bottombar = () => {
-  const liStyle = "";
-  const linkStyle = "";
+  const [active, setActive] = useState({});
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const mainPath = pathname === "/" ? "home" : pathname.split("/")[1];
+    menu.forEach((item) => {
+      const link = item.link === "/" ? "home" : item.link.split("/")[1];
+      if (link == mainPath) {
+        setActive((prev) => {
+          return {
+            ...prev,
+            [link]: true,
+          };
+        });
+      } else {
+        setActive((prev) => {
+          return {
+            ...prev,
+            [link]: false,
+          };
+        });
+      }
+    });
+  }, [pathname]);
   return (
-    <ul className="sm:hidden flex items-center border-b w-full py-3 px-5 justify-between">
-      <li>
-        <Link to={"/"}>
-          <Icon className="text-2xl" icon="material-symbols:home" />
-        </Link>
-      </li>
-      <li>
-        <Link to={"/create"}>
-          <Icon className="text-2xl" icon="fa-solid:feather" />
-        </Link>
-      </li>
-      <li>
-        <Link to={"/search"}>
-          <Icon className="text-2xl" icon="uil:search" />
-        </Link>
-      </li>
-      <li>
-        <Link to={"/notifications"}>
-          <Icon className="text-2xl" icon="ph:bell-fill" />
-        </Link>
-      </li>
-      <li className={"md:block hidden"}>
-        <Link to={"/messages"}>
-          <Icon className="text-2xl" icon="tabler:message-circle-2-filled" />
-        </Link>
-      </li>
+    <ul className="sm:hidden fixed bottom-0 left-0  bg-white flex items-center border-b w-full py-5 px-5 justify-between border-t h-[12vh]">
+      {menu.map((item) => {
+        return (
+          item.label !== "message" && (
+            <li className={active[item.label] && "text-primary"}>
+              <Link to={item.link}>
+                <Icon className="text-2xl" icon={item.icon} />
+              </Link>
+            </li>
+          )
+        );
+      })}
     </ul>
   );
 };

@@ -52,7 +52,7 @@ const Card = ({ postid }) => {
   }, [postid]);
 
   return (
-    <div className="md:p-5 px-3 py-5 border-y border-collapse">
+    <div className="md:p-5 bg-white px-3 py-5 md:my-4 my-2 md:first-letter:border">
       {user && (
         <Link to={`/user/${post.userid}`}>
           <header>
@@ -62,7 +62,7 @@ const Card = ({ postid }) => {
                   <img
                     src={user.avatar + "?alt=media"}
                     alt="post user"
-                    className="md:w-[60px] md:h-[60px] w-[40px] h-[40px] object-cover rounded-full"
+                    className="md:w-[60px] border md:h-[60px] w-[40px] h-[40px] object-cover rounded-full"
                   />
                 ) : (
                   <div className="md:w-[60px] md:h-[60px] w-[40px] h-[40px] flex items-center justify-center rounded-full bg-gray-200">
@@ -83,7 +83,7 @@ const Card = ({ postid }) => {
               </div>
             </div>
             <div>
-              <p className="flex items-center gap-1 md:mt-0 mt-3 text-gray-500">
+              <p className="flex items-center gap-1 mt-3 text-gray-500">
                 <Icon icon="mdi:globe" className="md:text-2xl" />
                 <span className="md:text-base text-sm">{post.createdAt}</span>
               </p>
