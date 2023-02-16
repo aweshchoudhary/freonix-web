@@ -29,7 +29,7 @@ const Bottombar = () => {
     });
   }, [pathname]);
   return (
-    <ul className="sm:hidden fixed bottom-0 left-0  bg-white flex items-center border-b w-full py-5 px-5 justify-between border-t h-[12vh]">
+    <ul className="sm:hidden fixed bottom-0 left-0  bg-white flex items-center border-b w-full px-5 justify-between border-t h-[12vh]">
       {menu.map((item) => {
         return (
           item.label !== "message" && (

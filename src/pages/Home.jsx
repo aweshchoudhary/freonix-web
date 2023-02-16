@@ -6,9 +6,9 @@ import Loading from "../components/Loading";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
-  const postsRef = collection(db, "posts");
 
   const getAllPostsByLimit = async () => {
+    const postsRef = collection(db, "posts");
     const posts = await getDocs(postsRef);
     posts.forEach((post) => {
       setPosts((prev) => {
@@ -16,7 +16,7 @@ const Home = () => {
       });
     });
   };
-
+  console.log(posts);
   useEffect(() => {
     getAllPostsByLimit();
   }, []);
