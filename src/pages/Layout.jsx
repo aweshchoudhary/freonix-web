@@ -15,7 +15,7 @@ const Layout = () => {
       </Suspense>
       <main className="flex md:h-screen overflow-y-auto h-[calc(100vh-140px)] bg-gray-50">
         <Sidebar />
-        <article className="lg:w-[40%] lg:mx-auto md:flex-1 w-full shrink-0">
+        <article className="lg:w-[40%] lg:mx-auto lg:flex-none md:flex-1 w-full shrink-0">
           <Suspense fallback={<Loading />}>
             <Outlet />
           </Suspense>
