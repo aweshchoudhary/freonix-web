@@ -12,7 +12,7 @@ const Home = () => {
     const posts = await getDocs(postsRef);
     posts.forEach((post) => {
       setPosts((prev) => {
-        return [...prev, { id: post.id, ...post.data() }];
+        return [...prev, post.id];
       });
     });
   };
@@ -23,8 +23,8 @@ const Home = () => {
   return posts ? (
     <section>
       {posts.length ? (
-        posts.map((post, key) => {
-          return <Card key={key} postid={post.id} />;
+        posts.map((postid, key) => {
+          return <Card key={key} postid={postid} />;
         })
       ) : (
         <h2>No Posts!</h2>

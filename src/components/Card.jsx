@@ -43,6 +43,8 @@ const Card = ({ postid }) => {
     }
   };
 
+  console.log(post);
+  console.log(user);
   const isMounted = useRef(false);
   useEffect(() => {
     isMounted.current && getPostData();
