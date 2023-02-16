@@ -16,7 +16,7 @@ const Header = () => {
     dispatch(getUserById(userid));
   }, [userid]);
   return (
-    <header className="md:hidden flex items-center justify-between px-5 border-b h-[10vh]">
+    <header className="md:hidden flex items-center justify-between px-5 border-b h-[70px]">
       <div className="logo flex items-center gap-5">
         <Link to="/">
           <img

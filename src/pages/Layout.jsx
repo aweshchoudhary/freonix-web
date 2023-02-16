@@ -13,7 +13,7 @@ const Layout = () => {
           <Header />
         </header>
       </Suspense>
-      <main className="flex md:h-screen overflow-y-auto h-[80vh] bg-gray-50">
+      <main className="flex md:h-screen overflow-y-auto h-[calc(100vh-140px)] bg-gray-50">
         <Sidebar />
         <article className="md:w-[40%] md:mx-auto w-full shrink-0">
           <Suspense fallback={<Loading />}>
