@@ -46,7 +46,7 @@ const Leftbar = () => {
         </div>
       </div>
       <div className="followings mt-5">
-        {users.length ? (
+        {users?.length ? (
           <>
             <h2 className="text-3xl font-semibold mb-5">Your Followings</h2>
             <ul>
