@@ -1,5 +1,5 @@
 import Card from "../components/Card";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
@@ -8,7 +8,7 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
 
   const getAllPostsByLimit = async () => {
-    const postsRef = collection(db, "posts");
+    const postsRef = query(collection(db, "posts"), orderBy("createdAt"));
     const posts = await getDocs(postsRef);
     posts.forEach((post) => {
       setPosts((prev) => {

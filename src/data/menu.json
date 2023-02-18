@@ -21,16 +21,9 @@
     "active": false
   },
   {
-    "id": 4,
-    "label": "notifications",
-    "link": "/notifications",
-    "icon": "ri:notification-2-line",
-    "active": false
-  },
-  {
     "id": 5,
     "label": "message",
-    "link": "/message",
+    "link": "/messages",
     "icon": "bx:message",
     "active": false
   }

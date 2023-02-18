@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/auth/authSlice";
 import { useEffect, useRef, useState } from "react";
 import Loading from "../components/Loading";
+import Card from "../components/Card";
 import useRefreshUser from "../hooks/useRefreshUser";
-import { deleteObject } from "firebase/storage";
+import { deleteObject, ref, uploadBytes } from "firebase/storage";
 import {
   collection,
   deleteField,
@@ -16,7 +17,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { db } from "../config/firebase";
+import { db, storage } from "../config/firebase";
 import { toast } from "react-toastify";
 
 const User = () => {
@@ -154,70 +155,70 @@ const User = () => {
     });
   }
   async function updateAvatar() {
-    let imgPath;
-    const [file] = avatarRef.current.files;
-    if (file.size > 1048576) {
-      return toast.error("File size limit is 1MB");
-    }
-    if (data?.avatar) {
-      await deleteAvatar(userid, data);
-    }
-    if (file) {
-      const avatarImgRef = ref(storage, Date.now() + "-" + file.name);
-      await uploadBytes(avatarImgRef, file)
-        .then((e) => {
-          imgPath =
-            "https://firebasestorage.googleapis.com/v0/b/twitter-clone-362d5.appspot.com/o/" +
-            e.metadata.fullPath;
-        })
-        .catch((err) => toast.error(err.message));
-      const avatarDataRef = doc(db, "users", userid);
-      await updateDoc(avatarDataRef, {
-        avatar: imgPath,
-      })
-        .then(() => {
-          toast.success("Avatar Updated");
-        })
-        .catch((err) => toast.error(err.message));
+    try {
+      let imgPath;
+      const [file] = avatarRef.current.files;
+      if (file.size > 1048576) {
+        return toast.error("File size limit is 1MB");
+      }
+      if (data?.avatar) {
+        await deleteAvatar(userid, data);
+      }
+      if (file) {
+        const avatarImgRef = ref(storage, Date.now() + "-" + file.name);
+        const uploadData = await uploadBytes(avatarImgRef, file);
+        imgPath =
+          "https://firebasestorage.googleapis.com/v0/b/twitter-clone-362d5.appspot.com/o/" +
+          uploadData.metadata.fullPath;
+        const avatarDataRef = doc(db, "users", userid);
+        await updateDoc(avatarDataRef, {
+          avatar: imgPath,
+        });
+        toast.success("Cover Updated");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
     }
 
     refreshUser();
   }
   async function updateCover() {
-    let imgPath;
-    const [file] = coverRef.current.files;
-    if (file.size > 1048576) {
-      return toast.error("File size limit is 1MB");
-    }
-    if (data?.cover) {
-      await deleteCover(userid, data);
-    }
-    if (file) {
-      const coverImgRef = ref(storage, Date.now() + "-" + file.name);
-      await uploadBytes(coverImgRef, file)
-        .then((e) => {
-          imgPath =
-            "https://firebasestorage.googleapis.com/v0/b/twitter-clone-362d5.appspot.com/o/" +
-            e.metadata.fullPath;
-        })
-        .catch((err) => toast.error(err.message));
-      const coverDataRef = doc(db, "users", userid);
-      await updateDoc(coverDataRef, {
-        cover: imgPath,
-      })
-        .then(() => {
-          toast.success("Cover Updated");
-        })
-        .catch((err) => toast.error(err.message));
+    try {
+      let imgPath;
+      const [file] = coverRef.current.files;
+      if (file.size > 1048576) {
+        return toast.error("File size limit is 1MB");
+      }
+      if (data?.cover) {
+        await deleteCover(userid, data);
+      }
+      if (file) {
+        const coverImgRef = ref(storage, Date.now() + "-" + file.name);
+        const uploadData = await uploadBytes(coverImgRef, file);
+        imgPath =
+          "https://firebasestorage.googleapis.com/v0/b/twitter-clone-362d5.appspot.com/o/" +
+          uploadData.metadata.fullPath;
+        const coverDataRef = doc(db, "users", userid);
+        await updateDoc(coverDataRef, {
+          cover: imgPath,
+        });
+        toast.success("Cover Updated");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error(err.message);
     }
 
     refreshUser();
   }
-  const isMounted = useRef(false);
 
+  console.log(posts);
+
+  const isMounted = useRef(false);
   useEffect(() => {
     refreshUser(userid, setData, setError, setLoading);
-    // isMounted.current && getUserPosts(userid, setPosts);
+    isMounted.current && getUserPosts(userid, setPosts);
     return () => {
       isMounted.current = true;
     };
@@ -229,7 +230,7 @@ const User = () => {
 
   return data && !error ? (
     <>
-      <section className="header border-b pb-5 mb-5 bg-white">
+      <section className="header border-b pb-5 bg-white">
         <div className="header relative">
           {data?.cover ? (
             <img
@@ -302,20 +303,28 @@ const User = () => {
                   </button>
                 </>
               ) : followed ? (
-                <button
-                  onClick={() =>
-                    unfollowUser(
-                      data,
-                      loggedUserId,
-                      setError,
-                      refreshUser,
-                      setFollowed
-                    )
-                  }
-                  className="py-2 rounded px-5 border-2 border-primary text-primary"
-                >
-                  unfollow
-                </button>
+                <>
+                  <Link
+                    to={"/messages/" + data.id}
+                    className="py-2 border-primary mr-3 rounded px-5 border-2 bg-primary text-white"
+                  >
+                    Message
+                  </Link>
+                  <button
+                    onClick={() =>
+                      unfollowUser(
+                        data,
+                        loggedUserId,
+                        setError,
+                        refreshUser,
+                        setFollowed
+                      )
+                    }
+                    className="py-2 rounded px-5 border-2 border-primary text-primary"
+                  >
+                    unfollow
+                  </button>
+                </>
               ) : (
                 <button
                   onClick={() =>
@@ -402,12 +411,12 @@ const User = () => {
           </div>
         </div>
       </section>
-      {/* <section className="py-5">
-        {posts &&
+      <section>
+        {posts.length &&
           posts.map((item, id) => {
-            // return <Card key={id} postid={item} />;
+            return <Card key={id} postid={item} />;
           })}
-      </section> */}
+      </section>
     </>
   ) : (
     <Loading />

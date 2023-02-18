@@ -1,7 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 import { ref, uploadBytes } from "firebase/storage";
-import moment from "moment";
 import { db, storage } from "../../config/firebase";
 
 const initialState = {
@@ -35,7 +40,7 @@ export const uploadPost = createAsyncThunk(
         img: null,
         description: postData.description,
         userid: postData.userid,
-        createdAt: moment().fromNow(),
+        createdAt: serverTimestamp(),
       };
       const storageRef = ref(storage, Date.now() + "-" + postData.file.name);
       const uploadImage = await uploadBytes(storageRef, postData.file);

@@ -26,6 +26,7 @@ const Leftbar = () => {
     }
   }
 
+  console.log;
   useEffect(() => {
     getFollowedUsersList();
   }, []);

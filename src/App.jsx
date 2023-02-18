@@ -14,6 +14,7 @@ const Messages = lazy(() => import("./pages/Messages"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const Update = lazy(() => import("./pages/Update"));
+const Chat = lazy(() => import("./pages/Chat"));
 
 const App = () => {
   const { userid, accessToken, refreshToken } = useSelector(
@@ -88,6 +89,16 @@ const App = () => {
           element={
             userid && refreshToken && accessToken ? (
               <Messages />
+            ) : (
+              <Navigate to={"/login"} />
+            )
+          }
+        />
+        <Route
+          path="messages/:userid"
+          element={
+            userid && refreshToken && accessToken ? (
+              <Chat />
             ) : (
               <Navigate to={"/login"} />
             )
