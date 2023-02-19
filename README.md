@@ -1,2 +1,2 @@
 # freonix-web
-Live Link: www.freonix.netlify.app
+Live Link: https://freonix.netlify.app
