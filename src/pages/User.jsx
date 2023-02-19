@@ -215,13 +215,9 @@ const User = () => {
 
   console.log(posts);
 
-  const isMounted = useRef(false);
   useEffect(() => {
     refreshUser(userid, setData, setError, setLoading);
-    isMounted.current && getUserPosts(userid, setPosts);
-    return () => {
-      isMounted.current = true;
-    };
+    getUserPosts(userid, setPosts);
   }, [userid]);
 
   useEffect(() => {
