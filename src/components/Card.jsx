@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { db, storage } from "../config/firebase";
-import moment from "moment/moment";
 
 const Card = ({ postid }) => {
   const [post, setPost] = useState({});
