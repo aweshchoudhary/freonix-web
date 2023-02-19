@@ -213,8 +213,6 @@ const User = () => {
     refreshUser();
   }
 
-  console.log(posts);
-
   useEffect(() => {
     refreshUser(userid, setData, setError, setLoading);
     getUserPosts(userid, setPosts);

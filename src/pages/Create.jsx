@@ -1,5 +1,4 @@
 import { Icon } from "@iconify/react";
-import moment from "moment/moment";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
